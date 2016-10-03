@@ -37,7 +37,7 @@ void mapCallBack(const nav_msgs::OccupancyGrid::ConstPtr& msg)
 int main(int argc, char **argv)
 {
 
-  unsigned long init[4] = {0x123, 0x234, 0x345, 0x456}, length = 4;
+  unsigned long init[4] = {0x123, 0x234, 0x345, 0x456}, length = 7;
   MTRand_int32 irand(init, length); // 32-bit int generator
 // this is an example of initializing by an array
 // you may use MTRand(seed) with any 32bit integer
@@ -56,7 +56,7 @@ int main(int argc, char **argv)
   // fetching all parameters
   float eta,init_map_x,init_map_y;
   
-  ros::param::param<float>("eta", eta, 10.0);
+  ros::param::param<float>("eta", eta, 4.0);
   ros::param::param<float>("init_map_x", init_map_x, 20.0);
   ros::param::param<float>("init_map_y", init_map_y, 20.0);
  
