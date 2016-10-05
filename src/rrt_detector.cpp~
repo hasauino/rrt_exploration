@@ -55,20 +55,19 @@ int main(int argc, char **argv)
   
   // fetching all parameters
   float eta,init_map_x,init_map_y;
-  
-  ros::param::param<float>("eta", eta, 4.0);
-  ros::param::param<float>("init_map_x", init_map_x, 20.0);
-  ros::param::param<float>("init_map_y", init_map_y, 20.0);
- 
-  std::string ns;
-  ns=ros::this_node::getNamespace();
-
-  std::string temp ("map");
   std::string map_topic,base_frame_topic;
-  ros::param::param<std::string>("map_topic", map_topic, ns+temp); 
-  ros::param::param<std::string>("base_frame_topic", base_frame_topic, "robot_1/base_link");  // edit this  to after you finish>>>  "base_link" 
+  
+  std::string ns;
+  ns=ros::this_node::getName();
+
+
+  ros::param::param<float>("/eta", eta, 2.0);
+  ros::param::param<float>("/init_map_x", init_map_x, 20.0);
+  ros::param::param<float>("/init_map_y", init_map_y, 20.0);
+  ros::param::param<std::string>("/map_topic", map_topic, "/robot_1/map"); 
+  ros::param::param<std::string>("/base_frame_topic", base_frame_topic, "robot_1/base_link");  
 //---------------------------------------------------------------
-ros::Subscriber sub= nh.subscribe("/robot_1/map", 100 ,mapCallBack);	
+ros::Subscriber sub= nh.subscribe(map_topic, 100 ,mapCallBack);	
 
 ros::Publisher targetspub = nh.advertise<geometry_msgs::Point>("/exploration_goals", 10);
 //targetspub.publish(msg);
@@ -87,8 +86,8 @@ while (mapData.header.seq<1 or mapData.data.size()<1)  {  ros::spinOnce();  }
 tf::TransformListener listener;
 tf::StampedTransform transform;
 
-listener.waitForTransform(mapData.header.frame_id, ns+base_frame_topic, ros::Time(0), ros::Duration(10.0) );
-listener.lookupTransform(mapData.header.frame_id, ns+base_frame_topic, ros::Time(0), transform);
+listener.waitForTransform(mapData.header.frame_id, base_frame_topic, ros::Time(0), ros::Duration(10.0) );
+listener.lookupTransform(mapData.header.frame_id, base_frame_topic, ros::Time(0), transform);
 
 tf::Vector3 trans;
 
@@ -121,19 +120,19 @@ points.action =points.ADD;
 line.action = line.ADD;
 points.pose.orientation.w =1.0;
 line.pose.orientation.w = 1.0;
-line.scale.x =  0.06;
-line.scale.y= 0.06;
+line.scale.x =  0.03;
+line.scale.y= 0.03;
 points.scale.x=0.3; 
 points.scale.y=0.3; 
 
-line.color.r =0.0;//9.0/255.0
-line.color.g= 0.0;//91.0/255.0
-line.color.b =0.0;//236.0/255.0
+line.color.r =9.0/255.0;
+line.color.g= 91.0/255.0;
+line.color.b =236.0/255.0;
 points.color.r = 255.0/255.0;
 points.color.g = 0.0/255.0;
 points.color.b = 0.0/255.0;
 points.color.a=1;
-line.color.a = 1;//0.6;
+line.color.a = 0.4;
 points.lifetime = ros::Duration();
 line.lifetime = ros::Duration();
 	
@@ -199,7 +198,7 @@ char   checking=ObstacleFree(x_nearest,x_new,mapData);
           	targetspub.publish(exploration_goal);
   		
 
-          	listener.lookupTransform(mapData.header.frame_id, ns+base_frame_topic, ros::Time(0), transform);
+          	listener.lookupTransform(mapData.header.frame_id, base_frame_topic, ros::Time(0), transform);
           	trans=transform.getOrigin();
           	
 	  	std::vector<float> x_init;

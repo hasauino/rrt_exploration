@@ -1,0 +1,12 @@
+<!-- -->
+<launch>
+<!--group ns="map_merge"-->
+  <node pkg="rrt_exploration" type="rrt_detector" name="rrt_detector" output="screen">
+    <param name="eta" value="0.10"/>
+    <param name="init_map_x" value="20.0"/>
+    <param name="init_map_y" value="20.0"/>
+    <param name="map_topic" value="/robot_1/map"/>
+    <param name="base_frame_topic" value="/robot_1/base_link"/>
+  </node>
+<!--/group-->
+</launch>
