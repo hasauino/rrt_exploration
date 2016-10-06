@@ -80,14 +80,43 @@ ros::Rate rate(100);
  
  
 // wait until map is received, when a map is received, mapData.header.seq will not be < 1  
-while (mapData.header.seq<1 or mapData.data.size()<1)  {  ros::spinOnce();  }
+while (mapData.header.seq<1 or mapData.data.size()<1)  {  ros::spinOnce();  ros::Duration(1.0).sleep();}
 
 
 tf::TransformListener listener;
 tf::StampedTransform transform;
 
-listener.waitForTransform(mapData.header.frame_id, base_frame_topic, ros::Time(0), ros::Duration(10.0) );
-listener.lookupTransform(mapData.header.frame_id, base_frame_topic, ros::Time(0), transform);
+listener.waitForTransform(mapData.header.frame_id, base_frame_topic, ros::Time(0), ros::Duration(1000.0) );
+
+
+
+try{
+    ros::Time now = ros::Time::now();
+    listener.waitForTransform(mapData.header.frame_id, base_frame_topic, ros::Time(0), ros::Duration(10.0) );
+    listener.lookupTransform(mapData.header.frame_id, base_frame_topic, now, transform);
+}
+
+
+    catch (tf::TransformException ex){
+    ros::Duration(1.0).sleep();
+    }
+
+
+
+
+
+
+
+
+
+//    std_msgs::String msg;
+//   std::stringstream ss;
+//     ss << "yes " << 0;
+//    msg.data = ss.str();
+//    ROS_INFO("%s", msg.data.c_str());
+
+
+
 
 tf::Vector3 trans;
 
@@ -125,14 +154,14 @@ line.scale.y= 0.03;
 points.scale.x=0.3; 
 points.scale.y=0.3; 
 
-line.color.r =9.0/255.0;
-line.color.g= 91.0/255.0;
-line.color.b =236.0/255.0;
+line.color.r =0;//9.0/255.0;
+line.color.g= 0;//91.0/255.0;
+line.color.b =0;//236.0/255.0;
 points.color.r = 255.0/255.0;
 points.color.g = 0.0/255.0;
 points.color.b = 0.0/255.0;
 points.color.a=1;
-line.color.a = 0.4;
+line.color.a = 1.0;
 points.lifetime = ros::Duration();
 line.lifetime = ros::Duration();
 	
