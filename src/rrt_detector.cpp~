@@ -61,7 +61,7 @@ int main(int argc, char **argv)
   ns=ros::this_node::getName();
 
 
-  ros::param::param<float>("/eta", eta, 2.0);
+  ros::param::param<float>("/eta", eta, 4.5);
   ros::param::param<float>("/init_map_x", init_map_x, 20.0);
   ros::param::param<float>("/init_map_y", init_map_y, 20.0);
   ros::param::param<std::string>("/map_topic", map_topic, "/robot_1/map"); 
@@ -86,7 +86,6 @@ while (mapData.header.seq<1 or mapData.data.size()<1)  {  ros::spinOnce();  ros:
 tf::TransformListener listener;
 tf::StampedTransform transform;
 
-listener.waitForTransform(mapData.header.frame_id, base_frame_topic, ros::Time(0), ros::Duration(1000.0) );
 
 
 
