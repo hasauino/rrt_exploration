@@ -1,9 +1,0 @@
-<!-- -->
-<launch>
-<!--group ns="map_merge"-->
-  <node pkg="rrt_exploration" type="rrt_detector" name="rrt_detector" output="screen">
-    <param name="eta" value="0.1"/>
-
-  </node>
-<!--/group-->
-</launch>
