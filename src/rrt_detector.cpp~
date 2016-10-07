@@ -54,18 +54,19 @@ int main(int argc, char **argv)
   ros::NodeHandle nh;
   
   // fetching all parameters
-  float eta,init_map_x,init_map_y;
+  float eta,init_map_x,init_map_y,range;
   std::string map_topic,base_frame_topic;
   
   std::string ns;
   ns=ros::this_node::getName();
 
 
-  ros::param::param<float>("/eta", eta, 4.5);
-  ros::param::param<float>("/init_map_x", init_map_x, 20.0);
-  ros::param::param<float>("/init_map_y", init_map_y, 20.0);
-  ros::param::param<std::string>("/map_topic", map_topic, "/robot_1/map"); 
-  ros::param::param<std::string>("/base_frame_topic", base_frame_topic, "robot_1/base_link");  
+  ros::param::param<float>(ns+"/eta", eta, 4.0);
+  ros::param::param<float>(ns+"/range", range, 6.5);
+  ros::param::param<float>(ns+"/init_map_x", init_map_x, 20.0);
+  ros::param::param<float>(ns+"/init_map_y", init_map_y, 20.0);
+  ros::param::param<std::string>(ns+"/map_topic", map_topic, "/robot_1/map"); 
+  ros::param::param<std::string>(ns+"/base_frame_topic", base_frame_topic, "robot_1/base_link");  
 //---------------------------------------------------------------
 ros::Subscriber sub= nh.subscribe(map_topic, 100 ,mapCallBack);	
 
@@ -212,7 +213,7 @@ char   checking=ObstacleFree(x_nearest,x_new,mapData);
 
 //ROS_INFO("%i",int(checking));
 
-	  if (checking==-1 && Norm(x_new,xnew)<6.5){
+	  if (checking==-1 && Norm(x_new,xnew)<range){
           	
           	exploration_goal.x=x_new[0];
           	exploration_goal.y=x_new[1];

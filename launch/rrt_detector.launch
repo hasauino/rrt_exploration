@@ -1,8 +1,15 @@
 <!-- -->
 <launch>
 <!--group ns="map_merge"-->
-  <node pkg="rrt_exploration" type="rrt_detector" name="rrt_detector" output="screen"/>
-   <node pkg="rrt_exploration" type="assigner.py" name="assigner"/>
+  <node pkg="rrt_exploration" type="rrt_detector" name="rrt_detector" output="screen">
+  <param name="eta" value="4.0"/>
+  <param name="range" value="6.5"/> 
+  <param name="init_map_x" value="20.0"/>
+  <param name="init_map_y" value="20.0"/>
+  <param name="map_topic" value="/robot_1/map"/>
+  <param name="base_frame_topic" value="robot_1/base_link"/>
+  </node>
+   <!--node pkg="rrt_exploration" type="assigner.py" name="assigner"/-->
 
 
 <!--/group-->
