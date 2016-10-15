@@ -248,6 +248,8 @@ def node():
 		ms.fit(frontiers)
 		centroids= ms.cluster_centers_	 #centroids array is the centers of each cluster
 
+          if len(frontiers)==1:
+          	centroids=frontiers
 
 #-------------------------------------------------------------------------
 #Get robot positions
