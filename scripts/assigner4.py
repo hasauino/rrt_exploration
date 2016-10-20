@@ -275,7 +275,7 @@ def node():
 	  	
 #-------------------------------------------------------------------------
 #Update vaild frontier centroids for each robot
-	  centroids_radius=4.0
+	  centroids_radius=2.0
           print centroids,"\n------------------\n"
           if len(centroids)>0:
           	for j in range(0,n_robots):

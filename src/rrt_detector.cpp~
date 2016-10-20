@@ -127,7 +127,7 @@ std::vector< std::vector<float>  > V;
 std::vector<float> xnew; 
 
 
-xnew.push_back( trans.x() );xnew.push_back( trans.y() );  
+xnew.push_back( trans.x()+1.0 );xnew.push_back( trans.y() );  
 V.push_back(xnew);
 
 //visualizations  points and lines..
