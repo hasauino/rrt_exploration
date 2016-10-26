@@ -105,7 +105,7 @@ def node():
 	# fetching all parameters
 	n_robots = rospy.get_param('~n_robots',3)
 	min_distance= rospy.get_param('~min_distance',1.0)
-	centroids_radius= rospy.get_param('~centroids_radius',3.5)
+	centroids_radius= rospy.get_param('~centroids_radius',2.5)
 		
 #-------------------------------------------
     	rospy.Subscriber("/map_merge/map", OccupancyGrid, mapCallBack)
@@ -222,7 +222,7 @@ def node():
 	  	
 	     x_pos=[array(  [    trans[0],trans[1]   ]   )]
 	     
-	     robot_data=robot_data+[{'ID':j , 'position':x_pos,   'commanded':x_pos, 'valid_centroids':[]  }] 			#initially commnded position = current position
+	     robot_data=robot_data+[{'ID':j , 'position':x_pos,   'commanded':x_pos, 'valid_centroids':[], 'weights':[]  }] 			#initially commnded position = current position
 
     	
 #-------------------------------------------------------------------------
@@ -282,7 +282,8 @@ def node():
           if len(centroids)>0:
           	for j in range(0,n_robots):
           		robot_data[j]['valid_centroids']=[]
-          	
+          		robot_data[j]['weights']=[]
+          		
           	
           		
           		for k in range(0,len(centroids)):
@@ -298,7 +299,7 @@ def node():
           				robot_data[j]['valid_centroids']=robot_data[j]['valid_centroids']+[	centroids[k]]
           		robot_data[j]=assign(goal,clients[j],robot_data[j])
           		print "r",robot_data[j]['ID'],"   ",robot_data[j]['valid_centroids'],"\n------------------\n"
-
+			#print robot_data[1]
 
           		
 	  

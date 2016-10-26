@@ -104,7 +104,9 @@ def node():
 	
 	# fetching all parameters
 	n_robots = rospy.get_param('~n_robots',3)
-	min_distance= rospy.get_param('~min_distance',1.0)	
+	min_distance= rospy.get_param('~min_distance',1.0)
+	centroids_radius= rospy.get_param('~centroids_radius',3.5)
+		
 #-------------------------------------------
     	rospy.Subscriber("/map_merge/map", OccupancyGrid, mapCallBack)
     	rospy.Subscriber("/exploration_goals", Point, callBack)
@@ -275,7 +277,7 @@ def node():
 	  	
 #-------------------------------------------------------------------------
 #Update vaild frontier centroids for each robot
-	  centroids_radius=2.0
+	  
           print centroids,"\n------------------\n"
           if len(centroids)>0:
           	for j in range(0,n_robots):
@@ -294,10 +296,11 @@ def node():
           			if temp:
           				
           				robot_data[j]['valid_centroids']=robot_data[j]['valid_centroids']+[	centroids[k]]
-          				robot_data[j]=assign(goal,clients[j],robot_data[j])
+          		robot_data[j]=assign(goal,clients[j],robot_data[j])
           		print "r",robot_data[j]['ID'],"   ",robot_data[j]['valid_centroids'],"\n------------------\n"
 
 
+          		
 	  
 
 #-------------------------------------------------------------------------

@@ -257,7 +257,7 @@ def node():
 #-------------------------------------------------------------------------
 #Get robot positions
 	   	
-          
+          centroids=frontiers
 
           for j in range(0,n_robots):
 	     cond=0;	
