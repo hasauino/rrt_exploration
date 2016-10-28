@@ -103,12 +103,12 @@ def node():
 	rospy.init_node('assigner', anonymous=False)
 	
 	# fetching all parameters
-	n_robots = rospy.get_param('~n_robots',3)
-	min_distance= rospy.get_param('~min_distance',1.0)
+	n_robots = rospy.get_param('~n_robots',1)
+	min_distance= rospy.get_param('~min_distance',0.0)
 	centroids_radius= rospy.get_param('~centroids_radius',3.5)
 		
 #-------------------------------------------
-    	rospy.Subscriber("/map_merge/map", OccupancyGrid, mapCallBack)
+    	rospy.Subscriber("/robot_1/map", OccupancyGrid, mapCallBack)
     	rospy.Subscriber("/exploration_goals", Point, callBack)
     	pub = rospy.Publisher('frontiers', Marker, queue_size=10)
     	pub2 = rospy.Publisher('centroids', Marker, queue_size=10)

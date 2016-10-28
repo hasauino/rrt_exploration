@@ -22,7 +22,7 @@ import numpy as np
 
 # Nearest function-------------------------------------
 def Nearest(V,x):
- n=1000000
+ n=inf
  i=0
  for i in range(0,V.shape[0]):
     n1=LA.norm(V[i,:]-x)

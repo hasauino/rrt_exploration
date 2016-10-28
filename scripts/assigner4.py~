@@ -33,11 +33,9 @@ import numpy as np
 def Nearest_centroids(robot_data):
  n=inf
  result=-1
- x=robot_data['position']
+ 
  V=robot_data['valid_centroids']
- 
- 
- 
+ x=robot_data['position']
  for i in range(0,len(V)):
     n1=LA.norm(V[i]-x)	
     
@@ -51,22 +49,27 @@ def Nearest_centroids(robot_data):
 
 
 def assign(goal,client,robot_data):
-	
+	global frontiers
 	clientstate=client.get_state()
 	
 	if clientstate==2 or clientstate==3 or clientstate==4 or clientstate==5 or clientstate==9:
 		
 		if len(robot_data['valid_centroids'])>0:
-			
+
     			row=Nearest_centroids(robot_data)
     			
     			if row>=0:
     				
 	    			commanded=robot_data['valid_centroids'][row]
-	    			goal.target_pose.pose.position.x=commanded[0]
-				goal.target_pose.pose.position.y=commanded[1]
-    				goal.target_pose.pose.orientation.w = 1.0
-    				print "exploration goal sent"
+				temp=[array(commanded)]
+				
+				r=Nearest2(frontiers,temp)
+	    			goal.target_pose.pose.position.x=frontiers[r][0]
+				goal.target_pose.pose.position.y=frontiers[r][1]
+				goal.target_pose.pose.orientation.w = 1.0
+    				
+    				frontiers=delete(frontiers, (r), axis=0)
+    				
 				client.send_goal(goal)
 				robot_data['commanded']=commanded
 	
@@ -103,12 +106,12 @@ def node():
 	rospy.init_node('assigner', anonymous=False)
 	
 	# fetching all parameters
-	n_robots = rospy.get_param('~n_robots',3)
+	n_robots = rospy.get_param('~n_robots',1)
 	min_distance= rospy.get_param('~min_distance',1.0)
 	centroids_radius= rospy.get_param('~centroids_radius',3.5)
 		
 #-------------------------------------------
-    	rospy.Subscriber("/map_merge/map", OccupancyGrid, mapCallBack)
+    	rospy.Subscriber("/robot_1/map", OccupancyGrid, mapCallBack)
     	rospy.Subscriber("/exploration_goals", Point, callBack)
     	pub = rospy.Publisher('frontiers', Marker, queue_size=10)
     	pub2 = rospy.Publisher('centroids', Marker, queue_size=10)
@@ -253,12 +256,9 @@ def node():
 #if there is only one frontier no need for clustering, i.e. centroids=frontiers
           if len(frontiers)==1:
           	centroids=frontiers
-
+          	
 #-------------------------------------------------------------------------
 #Get robot positions
-	   	
-          
-
           for j in range(0,n_robots):
 	     cond=0;	
 	     while cond==0:	
@@ -278,7 +278,7 @@ def node():
 #-------------------------------------------------------------------------
 #Update vaild frontier centroids for each robot
 	  
-          print centroids,"\n------------------\n"
+          
           if len(centroids)>0:
           	for j in range(0,n_robots):
           		robot_data[j]['valid_centroids']=[]
@@ -297,21 +297,9 @@ def node():
           				
           				robot_data[j]['valid_centroids']=robot_data[j]['valid_centroids']+[	centroids[k]]
           		robot_data[j]=assign(goal,clients[j],robot_data[j])
-          		print "r",robot_data[j]['ID'],"   ",robot_data[j]['valid_centroids'],"\n------------------\n"
 
 
-          		
-	  
 
-#-------------------------------------------------------------------------
-#Assignment
-          #for j in range(0,n_robots):
-		#robot_data[j]=assign(goal,clients[j],robot_data[j])
-
-          
-          
-          
-          
           
 #-------------------------------------------------------------------------        
 #Plotting

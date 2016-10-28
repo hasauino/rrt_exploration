@@ -118,8 +118,8 @@ return out;
 
 // ObstacleFree function-------------------------------------
 
-char ObstacleFree(std::vector<float> xnear, std::vector<float> xnew, nav_msgs::OccupancyGrid mapsub){
-float rez=float(mapsub.info.resolution)*1.0; 
+char ObstacleFree(std::vector<float> xnear, std::vector<float> &xnew, nav_msgs::OccupancyGrid mapsub){
+float rez=float(mapsub.info.resolution)*1.0;
 float stepz=int(ceil(Norm(xnew,xnear))/rez); 
 std::vector<float> xi=xnear;
 char  obs=0; char unk=0;
@@ -131,10 +131,10 @@ for (int c=0;c<stepz;c++){
 
    if (gridValue(mapsub,xi) ==100){     obs=1; }
    
-   if (gridValue(mapsub,xi) ==-1){      unk=1;	}
+   if (gridValue(mapsub,xi) ==-1){      unk=1;	break;}
   }
 char out=0;
- 
+ xnew=xi;
  if (unk==1){  out=-1;}
  	
  if (obs==1){  out=0;}

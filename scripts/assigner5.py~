@@ -79,16 +79,18 @@ mapData=OccupancyGrid()
 frontiers=[]
 
 def callBack(data):
-    
+    print "--------ok------------"
     global frontiers,min_distance
     x=[array([data.x,data.y])]
     
     if len(frontiers)>0:
-    	if LA.norm(frontiers[  Nearest2(frontiers,x)  ]-x)>min_distance:
+    	print "--------1111------------"
+    	if LA.norm(frontiers[  Nearest2(frontiers,x)  ]-x)>0.0:
        		frontiers=vstack((frontiers,x))
     else:
        	frontiers=x
-	
+	print "--------2222------------"
+	print frontiers
 
     
 def mapCallBack(data):
@@ -103,12 +105,12 @@ def node():
 	rospy.init_node('assigner', anonymous=False)
 	
 	# fetching all parameters
-	n_robots = rospy.get_param('~n_robots',3)
+	n_robots = rospy.get_param('~n_robots',1)
 	min_distance= rospy.get_param('~min_distance',1.0)
 	centroids_radius= rospy.get_param('~centroids_radius',2.5)
 		
 #-------------------------------------------
-    	rospy.Subscriber("/map_merge/map", OccupancyGrid, mapCallBack)
+    	rospy.Subscriber("/robot_1/map", OccupancyGrid, mapCallBack)
     	rospy.Subscriber("/exploration_goals", Point, callBack)
     	pub = rospy.Publisher('frontiers', Marker, queue_size=10)
     	pub2 = rospy.Publisher('centroids', Marker, queue_size=10)

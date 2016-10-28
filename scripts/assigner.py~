@@ -143,8 +143,8 @@ def node():
 	  	x_pos=[array(  [    trans[0],trans[1]   ]   )]
 	  	robots_positions.append(x_pos)
 	  print robots_positions,"\n ------------------------"
-	  for j in range(0,n_robots):	
-          	frontiers=assigner1rrtfront(goal,frontiers,clients[j],robots_positions[j]) 
+	  #for j in range(0,n_robots):	
+          	#frontiers=assigner1rrtfront(goal,frontiers,clients[j],robots_positions[j]) 
           
           
           
