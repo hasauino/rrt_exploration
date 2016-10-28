@@ -4,9 +4,9 @@
 <launch>
 
   <node pkg="rrt_exploration" type="rrt_detector" name="rrt_detector" output="screen">
-  <param name="eta" value="4.5"/>
+  <param name="eta" value="1.5"/>
   <param name="map_topic" value="/robot_1/map"/>
   </node>
  
-  <!--node pkg="rrt_exploration" type="assigner.py" name="assigner"/-->
+  <node pkg="rrt_exploration" type="assigner.py" name="assigner"/>
 </launch>
