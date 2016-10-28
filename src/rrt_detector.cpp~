@@ -24,7 +24,7 @@ nav_msgs::OccupancyGrid mapData;
 geometry_msgs::PointStamped clickedpoint;
 geometry_msgs::Point exploration_goal;
 visualization_msgs::Marker points,line;
-float xdim,ydim,resolution,Xstartx,Xstarty;
+float xdim,ydim,resolution,Xstartx,Xstarty,init_map_x,init_map_y;
 
 rdm r; // for genrating random numbers
 
@@ -75,10 +75,7 @@ int main(int argc, char **argv)
   ns=ros::this_node::getName();
 
   ros::param::param<float>(ns+"/eta", eta, 0.5);
-  ros::param::param<float>(ns+"/init_map_x", init_map_x, 20.0);
-  ros::param::param<float>(ns+"/init_map_y", init_map_y, 20.0);
   ros::param::param<std::string>(ns+"/map_topic", map_topic, "/robot_1/map"); 
-  ros::param::param<std::string>(ns+"/base_frame_topic", base_frame_topic, "robot_1/base_link");  
 //---------------------------------------------------------------
 ros::Subscriber sub= nh.subscribe(map_topic, 100 ,mapCallBack);	
 ros::Subscriber rviz_sub= nh.subscribe("/clicked_point", 100 ,rvizCallBack);	
@@ -132,7 +129,7 @@ line.lifetime = ros::Duration();
 geometry_msgs::Point p;  
 
 
-while(points.points.size()<1)
+while(points.points.size()<5)
 {
 ros::spinOnce();
 
@@ -142,37 +139,52 @@ pub.publish(points) ;
 
 
 
+std::vector<float> temp1;
+temp1.push_back(points.points[0].x);
+temp1.push_back(points.points[0].y);
+	
+std::vector<float> temp2; 
+temp2.push_back(points.points[2].x);
+temp2.push_back(points.points[0].y);
+
+
+init_map_x=Norm(temp1,temp2);
+temp1.clear();		temp2.clear();
+
+temp1.push_back(points.points[0].x);
+temp1.push_back(points.points[0].y);
+
+temp2.push_back(points.points[0].x);
+temp2.push_back(points.points[2].y);
+
+init_map_y=Norm(temp1,temp2);
+temp1.clear();		temp2.clear();
+
+Xstartx=(points.points[0].x+points.points[2].x)*.5;
+Xstarty=(points.points[0].y+points.points[2].y)*.5;
+
+
+
+
 
 geometry_msgs::Point trans;
-trans=points.points[0];
+trans=points.points[4];
 std::vector< std::vector<float>  > V; 
 std::vector<float> xnew; 
 xnew.push_back( trans.x);xnew.push_back( trans.y);  
 V.push_back(xnew);
 
+points.points.clear();
+pub.publish(points) ;
 
 
 
-
-p.x = trans.x ;
-p.y = trans.y ;
-p.z = 0;
-
-points.points.push_back(p);
 
 
 
 
 std::vector<float> frontiers;
-xdim=mapData.info.width;
-ydim=mapData.info.height;
-resolution=mapData.info.resolution;
-Xstartx=mapData.info.origin.position.x;
-Xstarty=mapData.info.origin.position.y;
-
 int i=0;
-
-
 float xr,yr;
 std::vector<float> x_rand,x_nearest,x_new;
 
@@ -182,8 +194,8 @@ while (ros::ok()){
 
 // Sample free
 x_rand.clear();
-xr=(drand()*init_map_x)-(init_map_x*0.5);
-yr=(drand()*init_map_y)-(init_map_y*0.5);
+xr=(drand()*init_map_x)-(init_map_x*0.5)+Xstartx;
+yr=(drand()*init_map_y)-(init_map_y*0.5)+Xstarty;
 
 
 x_rand.push_back( xr ); x_rand.push_back( yr );
