@@ -32,8 +32,8 @@ rdm r; // for genrating random numbers
 
 //Subscribers callback functions---------------------------------------
 void mapCallBack(const nav_msgs::OccupancyGrid::ConstPtr& msg)
-{ mapData=*msg;
-
+{
+mapData=*msg;
 }
 
 
@@ -90,7 +90,7 @@ ros::Rate rate(100);
  
  
 // wait until map is received, when a map is received, mapData.header.seq will not be < 1  
-while (mapData.header.seq<1 or mapData.data.size()<1)  {  ros::spinOnce();  ros::Duration(1.0).sleep();}
+while (mapData.header.seq<1 or mapData.data.size()<1)  {  ros::spinOnce();  ros::Duration(0.1).sleep();}
 
 
 
@@ -132,7 +132,7 @@ line.lifetime = ros::Duration();
 geometry_msgs::Point p;  
 
 
-while(points.points.size()<5)
+while(points.points.size()<1)
 {
 ros::spinOnce();
 
@@ -144,7 +144,7 @@ pub.publish(points) ;
 
 
 geometry_msgs::Point trans;
-trans=points.points[4];
+trans=points.points[0];
 std::vector< std::vector<float>  > V; 
 std::vector<float> xnew; 
 xnew.push_back( trans.x);xnew.push_back( trans.y);  
@@ -177,10 +177,6 @@ float xr,yr;
 std::vector<float> x_rand,x_nearest,x_new;
 
 
-
-
-
-
 // Main loop
 while (ros::ok()){
 
@@ -193,7 +189,6 @@ yr=(drand()*init_map_y)-(init_map_y*0.5);
 x_rand.push_back( xr ); x_rand.push_back( yr );
 
 
-
 // Nearest
 x_nearest=Nearest(V,x_rand);
 
@@ -204,8 +199,6 @@ x_new=Steer(x_nearest,x_rand,eta);
 
 // ObstacleFree    1:free     -1:unkown (frontier region)      0:obstacle
 char   checking=ObstacleFree(x_nearest,x_new,mapData);
-
-
 
 	  if (checking==-1){
           	

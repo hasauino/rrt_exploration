@@ -31,7 +31,7 @@ std::vector<float> Nearest(  std::vector< std::vector<float>  > , std::vector<fl
 std::vector<float> Steer(  std::vector<float>, std::vector<float>, float );
 
 //gridValue function prototype
-int gridValue(nav_msgs::OccupancyGrid ,std::vector<float>);
+int gridValue(nav_msgs::OccupancyGrid &,std::vector<float>);
 
 //ObstacleFree function prototype
 char ObstacleFree(std::vector<float> , std::vector<float> & , nav_msgs::OccupancyGrid);

@@ -74,7 +74,7 @@ return x_new;
 
 
 //gridValue function
-int gridValue(nav_msgs::OccupancyGrid mapData,std::vector<float> Xp){
+int gridValue(nav_msgs::OccupancyGrid &mapData,std::vector<float> Xp){
 
 float resolution=mapData.info.resolution;
 float Xstartx=mapData.info.origin.position.x;
@@ -85,31 +85,9 @@ std::vector<signed char> Data=mapData.data;
 
 //returns grid value at "Xp" location
 //map data:  100 occupied      -1 unknown       0 free
-
-int s=1;
-int ss=(s+1)*(s+1);
-float index[ss];
 float indx=(  floor((Xp[1]-Xstarty)/resolution)*width)+( floor((Xp[0]-Xstartx)/resolution) );
-
-int g=0;
-for (int k=-s;k<s;k++){
-for (int kk=-s;k<s;k++){
-index[g]=indx+k*width+kk;
-++g;
-}
-}
-
-
 int out;
 out=Data[int(indx)];
-
-
-
-for(int j=0;j<ss;j++){
-if (index[j]< Data.size())
- { if(Data[int(index[j])]==100){out=100;} }
-}
-
 return out;
 }
 
