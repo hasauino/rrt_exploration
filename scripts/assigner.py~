@@ -91,6 +91,8 @@ def callBack(data):
        		frontiers=vstack((frontiers,x))
     else:
        	frontiers=x
+    
+   
 	
 
     
@@ -240,6 +242,7 @@ def node():
 	  z=0
           while z<len(frontiers):
 	  	if gridValue(mapData,frontiers[z])!=-1:
+	  		print frontiers
 	  		frontiers=delete(frontiers, (z), axis=0)
 	  		z=z-1
 		z+=1

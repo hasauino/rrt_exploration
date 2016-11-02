@@ -14,7 +14,8 @@ from geometry_msgs.msg import PointStamped
 PointStamped
 import actionlib
 import tf
-
+from nav_msgs.srv import GetPlan
+from geometry_msgs.msg import PoseStamped
 
 
 from os import system
@@ -229,13 +230,16 @@ def node():
 	     
 	     robot_data=robot_data+[{'ID':j , 'position':x_pos,   'commanded':x_pos, 'valid_centroids':[]  }] 			#initially commnded position = current position
 
-    	
+
+
 #-------------------------------------------------------------------------
 #---------------------     Main   Loop     -------------------------------
 #-------------------------------------------------------------------------
 
 	while not rospy.is_shutdown():
 	
+
+
 		
 #-------------------------------------------------------------------------	
 #clearing old frontiers         
