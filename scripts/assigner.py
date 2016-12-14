@@ -11,7 +11,8 @@ from nav_msgs.msg import OccupancyGrid
 import actionlib_msgs.msg
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from geometry_msgs.msg import PointStamped 
-PointStamped
+from geometry_msgs.msg import PoseStamped
+from nav_msgs.srv import GetPlan
 import actionlib
 import tf
 
@@ -102,13 +103,14 @@ def mapCallBack(data):
     
 
 # Node----------------------------------------------
+
 def node():
 
 	global frontiers,mapData,min_distance
 	rospy.init_node('assigner', anonymous=False)
 	
 	# fetching all parameters
-	n_robots = rospy.get_param('~n_robots',1)
+	n_robots = rospy.get_param('~n_robots',3)
 	min_distance= rospy.get_param('~min_distance',1.0)
 	centroids_radius= rospy.get_param('~centroids_radius',3.5)
 		
@@ -117,6 +119,18 @@ def node():
     	rospy.Subscriber("/exploration_goals", Point, callBack)
     	pub = rospy.Publisher('frontiers', Marker, queue_size=10)
     	pub2 = rospy.Publisher('centroids', Marker, queue_size=10)
+    	
+#Path plan service------------------------------------
+    	start = PoseStamped()
+	start.header.frame_id = "/robot_1/map"
+	goal = PoseStamped()
+	goal.header.frame_id = "/robot_1/map"
+	tolerance=0.0
+	
+	rospy.wait_for_service('/robot_1/move_base_node/NavfnROS/make_plan')
+	make_plan = rospy.ServiceProxy('/robot_1/move_base_node/NavfnROS/make_plan', GetPlan)
+#---------------------------------------------------------------------------------------------------------------
+
     	
 	while mapData.header.seq<1 or len(mapData.data)<1:
 		pass	
@@ -242,7 +256,6 @@ def node():
 	  z=0
           while z<len(frontiers):
 	  	if gridValue(mapData,frontiers[z])!=-1:
-	  		print frontiers
 	  		frontiers=delete(frontiers, (z), axis=0)
 	  		z=z-1
 		z+=1

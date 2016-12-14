@@ -192,6 +192,7 @@ std::vector<float> x_rand,x_nearest,x_new;
 // Main loop
 while (ros::ok()){
 
+
 // Sample free
 x_rand.clear();
 xr=(drand()*init_map_x)-(init_map_x*0.5)+Xstartx;
