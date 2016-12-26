@@ -32,21 +32,13 @@ import numpy as np
 #functions
 
 def Nearest_centroids(robot_data):
- global make_plan,start,target_goal,tolerance
  n=inf
  result=-1
  
  V=robot_data['valid_centroids']
  x=robot_data['position']
-
- start.pose.position.x=x[0][0]
- start.pose.position.y=x[0][1]
  for i in range(0,len(V)):
-    target_goal.pose.position.x = V[i][0]
-    target_goal.pose.position.y = V[i][1]
-    plan = make_plan(start = start, goal = target_goal, tolerance = tolerance)
-
-    n1=len(plan.plan.poses)
+    n1=LA.norm(V[i]-x)	
     
     if (n1<n):
 	n=n1
@@ -110,24 +102,15 @@ def mapCallBack(data):
     mapData=data
     
 
-
-#Global variables
-start = PoseStamped()
-start.header.frame_id = "/robot_1/map"
-target_goal = PoseStamped()
-target_goal.header.frame_id = "/robot_1/map"
-tolerance=0.0
-make_plan=0
-
 # Node----------------------------------------------
 
 def node():
 
-	global frontiers,mapData,min_distance,make_plan,start,target_goal,tolerance
+	global frontiers,mapData,min_distance
 	rospy.init_node('assigner', anonymous=False)
 	
 	# fetching all parameters
-	n_robots = rospy.get_param('~n_robots',3)
+	n_robots = rospy.get_param('~n_robots',1)
 	min_distance= rospy.get_param('~min_distance',1.0)
 	centroids_radius= rospy.get_param('~centroids_radius',3.5)
 		
@@ -138,6 +121,12 @@ def node():
     	pub2 = rospy.Publisher('centroids', Marker, queue_size=10)
     	
 #Path plan service------------------------------------
+    	start = PoseStamped()
+	start.header.frame_id = "/robot_1/map"
+	goal = PoseStamped()
+	goal.header.frame_id = "/robot_1/map"
+	tolerance=0.0
+	
 	rospy.wait_for_service('/robot_1/move_base_node/NavfnROS/make_plan')
 	make_plan = rospy.ServiceProxy('/robot_1/move_base_node/NavfnROS/make_plan', GetPlan)
 #---------------------------------------------------------------------------------------------------------------
@@ -270,25 +259,6 @@ def node():
 	  		frontiers=delete(frontiers, (z), axis=0)
 	  		z=z-1
 		z+=1
-
-
-#-------------------------------------------------------------------------
-#clear unvalid frontiers (frontiers that cannot be reached by robot)
-	  start.pose.position.x = 0.0
-	  start.pose.position.y = 0.0
-
-	  z=0
-          while z<len(frontiers):
-	  	target_goal.pose.position.x = frontiers[z][0]
-		target_goal.pose.position.y = frontiers[z][1]
-		plan = make_plan(start = start, goal = target_goal, tolerance = tolerance)
-		if len(plan.plan.poses)<1:  #when there is no valid plan to a point, the path will be empty (poses list is empty)
-	  		frontiers=delete(frontiers, (z), axis=0)
-	  		z=z-1			
-		
-		
-		z+=1
-
 
 
 #-------------------------------------------------------------------------
