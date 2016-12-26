@@ -4,7 +4,7 @@
 <launch>
 
   <node pkg="rrt_exploration" type="rrt_detector" name="rrt_detector" output="screen">
-  <param name="eta" value="1.50"/>
+  <param name="eta" value="4.0"/>
   <!--param name="map_topic" value="/map_merge/map"/-->
   <param name="map_topic" value="/robot_1/map"/>
   </node>
