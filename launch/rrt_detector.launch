@@ -11,6 +11,6 @@
  
   <node pkg="rrt_exploration" type="assigner.py" name="assigner">
   <param name="n_robots" value="3"/>
-  <param name="min_distance" value="1.123"/>
+  <param name="min_distance" value="1.0"/>
   </node>
 </launch>
