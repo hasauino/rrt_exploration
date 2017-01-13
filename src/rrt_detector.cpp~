@@ -115,14 +115,14 @@ line.scale.y= 0.03;
 points.scale.x=0.3; 
 points.scale.y=0.3; 
 
-line.color.r =0;//9.0/255.0;
-line.color.g= 0;//91.0/255.0;
-line.color.b =0;//236.0/255.0;
+line.color.r =9.0/255.0;
+line.color.g= 91.0/255.0;
+line.color.b =236.0/255.0;
 points.color.r = 255.0/255.0;
 points.color.g = 0.0/255.0;
 points.color.b = 0.0/255.0;
-points.color.a=1;
-line.color.a = 1.0;
+points.color.a=0.3;
+line.color.a = 0.3;
 points.lifetime = ros::Duration();
 line.lifetime = ros::Duration();
 
