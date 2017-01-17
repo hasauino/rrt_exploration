@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+# tab width 8
 
 #--------Include modules---------------
 from copy import copy

@@ -4,13 +4,13 @@
 <launch>
 
   <node pkg="rrt_exploration" type="rrt_detector" name="rrt_detector" output="screen">
-  <param name="eta" value="4.0"/>
+  <param name="eta" value="1.0"/>
   <param name="map_topic" value="/map_merge/map"/>
   <!--param name="map_topic" value="/robot_1/map"/-->
   </node>
  
-  <node pkg="rrt_exploration" type="assigner.py" name="assigner">
+  <!--node pkg="rrt_exploration" type="assigner.py" name="assigner">
   <param name="n_robots" value="3"/>
   <param name="min_distance" value="1.0"/>
-  </node>
+  </node-->
 </launch>
