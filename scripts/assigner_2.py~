@@ -192,8 +192,7 @@ def node():
 #------------------------------------------------------------------------- 
 #get dicount and update informationGain
 		for i in range(0,nb):
-			robots[nb].assigned_point
-
+			infoGain=discount(mapData,robots[nb].assigned_point,centroids,infoGain,info_radius)
 #-------------------------------------------------------------------------            
 		frontiersRecord=[]
 		for ir in range(0,len(na)):
