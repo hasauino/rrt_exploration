@@ -25,6 +25,7 @@ from numpy import linalg as LA
 from numpy import all as All
 from numpy import inf
 from functions import Nearest,Nearest2,Steer,Near,ObstacleFree2,Find,Cost,prepEdges,gridValue
+from assigner2_functions import robot,informationGain
 from sklearn.cluster import KMeans
 from sklearn.cluster import MeanShift
 import numpy as np
@@ -59,8 +60,9 @@ def node():
 	
 	# fetching all parameters
 	map_topic= rospy.get_param('~map_topic','/map_merge/map')
+	info_radius= rospy.get_param('~info_radius',1.0)
 	goals_topic= rospy.get_param('~goals_topic','/exploration_goals')
-	n_robots = rospy.get_param('~n_robots',1)
+	n_robots = rospy.get_param('~n_robots',3)
 	global_frame=rospy.get_param('~global_frame','/robot_1/map')
 	
 	rate = rospy.Rate(100)
@@ -138,14 +140,17 @@ def node():
 
 	points_clust.color.a=1;
 	points_clust.lifetime = rospy.Duration();
+
+	robots=[]
+	for i in range(0,n_robots):
+		robots.append(robot('/robot_'+str(i+1)))
+	for i in range(0,n_robots):
+		robots[i].sendGoal(robots[i].getPosition())
 	
-#Initalize robot data dictionary list
-	robot_data=[]
 #-------------------------------------------------------------------------
 #---------------------     Main   Loop     -------------------------------
 #-------------------------------------------------------------------------
 
-	robot1=robot('/robot_1')
 	while not rospy.is_shutdown():
 	
 		
@@ -168,11 +173,36 @@ def node():
 
 		#if there is only one frontier no need for clustering, i.e. centroids=frontiers
 		if len(frontiers)==1:
-			centroids=frontiers			
+			centroids=frontiers		
+#-------------------------------------------------------------------------			
+#Get information gain for each frontier point
+		infoGain=[]
+		for ip in range(0,len(centroids)):
+			infoGain.append(informationGain(mapData,[centroids[ip][0],centroids[ip][1]],info_radius))			
+#-------------------------------------------------------------------------			
+#get number of available/busy robots
+		na=[] #available robots
+		nb=[] #busy robots
+		
+		for i in range(0,n_robots):
+			if (robots[i].getState()==1):
+				nb.append(i)
+			else:
+				na.append(i)	
+#-------------------------------------------------------------------------            
+		frontiersRecord=[]
+		for ir in range(0,len(na)):
+			for ip in range(0,len(centroids)):
+				cost=len(robots[ir].makePlan(robots[ir].getPosition(),centroids[ip]))
+				discount=0
+				hysteresis=1
+				information_gain=infoGain[ip]*hysteresis
+				revenue=information_gain-discount-cost
+				record={'centroid':centroids[ip],	'revenue':revenue,	'robot_id': ir	}
+				frontiersRecord.append(record)
 
-			
-			
 #-------------------------------------------------------------------------        
+
 		#Plotting
 		pp=[]	
 		for q in range(0,len(frontiers)):

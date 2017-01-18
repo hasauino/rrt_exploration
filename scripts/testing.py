@@ -3,7 +3,7 @@
 
 #--------Include modules---------------
 import rospy
-from assigner2_functions import robot,informationGain,index_of_point,point_of_index
+from assigner2_functions import robot,informationGain
 import thread
 from nav_msgs.msg import OccupancyGrid
 from geometry_msgs.msg import Point
