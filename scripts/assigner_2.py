@@ -189,6 +189,11 @@ def node():
 				nb.append(i)
 			else:
 				na.append(i)	
+#------------------------------------------------------------------------- 
+#get dicount and update informationGain
+		for i in range(0,nb):
+			robots[nb].assigned_point
+
 #-------------------------------------------------------------------------            
 		frontiersRecord=[]
 		for ir in range(0,len(na)):
