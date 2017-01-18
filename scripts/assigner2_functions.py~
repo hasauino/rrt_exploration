@@ -5,8 +5,9 @@ import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from nav_msgs.srv import GetPlan
 from geometry_msgs.msg import PoseStamped
-
-
+from numpy import floor
+from numpy.linalg import norm
+#________________________________________________________________________________
 class robot:
 	assigned_point=[]
 	goal = MoveBaseGoal()
@@ -71,3 +72,51 @@ class robot:
 		end=self.listener.transformPose(self.name+'/map', robot.end)
 		plan=self.make_plan(start = start, goal = end, tolerance = 0.0)
 		return plan.plan.poses
+#________________________________________________________________________________
+
+def index_of_point(mapData,Xp):
+	resolution=mapData.info.resolution
+	Xstartx=mapData.info.origin.position.x
+	Xstarty=mapData.info.origin.position.y
+	width=mapData.info.width
+	Data=mapData.data
+	index=int(	(  floor((Xp[1]-Xstarty)/resolution)*width)+( floor((Xp[0]-Xstartx)/resolution) ))
+	return index
+	
+def point_of_index(mapData,i):
+	y=mapData.info.origin.position.y+(i/mapData.info.width)*mapData.info.resolution
+	x=mapData.info.origin.position.x+(i-(i/mapData.info.width)*(mapData.info.width))*mapData.info.resolution
+	return array([x,y])
+#________________________________________________________________________________		
+
+def informationGain(mapData,point,r):
+	infoGain=0;
+	index=index_of_point(mapData,point)
+	r_region=int(r/mapData.info.resolution)
+	init_index=index-r_region*(mapData.info.width+1)	
+	for n in range(0,2*r_region+1):
+		start=n*mapData.info.width+init_index
+		end=start+2*r_region
+		limit=((start/mapData.info.width)+2)*mapData.info.width
+		for i in range(start,end+1):
+			if (i>=0 and i<limit and i<len(mapData.data)):
+				#print i
+				if(mapData.data[i]==-1 and norm(array(point)-point_of_index(mapData,i))<=r):
+					infoGain+=1
+	return infoGain
+#________________________________________________________________________________
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
