@@ -25,11 +25,11 @@ from numpy import linalg as LA
 from numpy import all as All
 from numpy import inf
 from functions import Nearest,Nearest2,Steer,Near,ObstacleFree2,Find,Cost,prepEdges,gridValue
-from assigner2_functions import robot,informationGain,discount
+from assigner2_functions import robot,informationGain,discount,pathCost
 from sklearn.cluster import KMeans
 from sklearn.cluster import MeanShift
 import numpy as np
-
+from numpy.linalg import norm
 
 
 from assigner2_functions import robot
@@ -62,6 +62,7 @@ def node():
 	# fetching all parameters
 	map_topic= rospy.get_param('~map_topic','/map_merge/map')
 	info_radius= rospy.get_param('~info_radius',1.0)					#this can be smaller than the laser scanner range, >> smaller >>less computation time>> too small is not good, info gain won't be accurate
+	info_multiplier=rospy.get_param('~info_multiplier',5.0)		
 	hysteresis_radius=rospy.get_param('~hysteresis_radius',5.0)			#at least as much as the laser scanner range
 	hysteresis_gain=rospy.get_param('~hysteresis_gain',2.0)				#bigger than 1 (biase robot to continue exploring current region
 	goals_topic= rospy.get_param('~goals_topic','/exploration_goals')	
@@ -149,16 +150,12 @@ def node():
 		robots.append(robot('/robot_'+str(i+1)))
 	for i in range(0,n_robots):
 		robots[i].sendGoal(robots[i].getPosition())
-	
-	k=1
-	
 #-------------------------------------------------------------------------
 #---------------------     Main   Loop     -------------------------------
 #-------------------------------------------------------------------------
 
 	while not rospy.is_shutdown():
-	
-		
+
 #-------------------------------------------------------------------------	
 #clearing old frontiers         
 		z=0
@@ -167,7 +164,6 @@ def node():
 				frontiers=delete(frontiers, (z), axis=0)
 				z=z-1
 			z+=1
-			
 #-------------------------------------------------------------------------
 #Clustering frontier points
 		centroids=[]
@@ -201,15 +197,14 @@ def node():
 		frontiersRecord=[]
 		for ir in range(0,len(na)):
 			for ip in range(0,len(centroids)):
-				cost=len(robots[ir].makePlan(robots[ir].getPosition(),centroids[ip]))
+				cost=pathCost(robots[ir].makePlan(robots[ir].getPosition(),centroids[ip]))
 				information_gain=infoGain[ip]
 				if (norm(robots[ir].getPosition()-centroids[ip])<=hysteresis_radius):
 					information_gain*=hysteresis_gain
-				revenue=information_gain-cost
+				revenue=information_gain*info_multiplier-cost
 				record={'centroid':centroids[ip],	'revenue':revenue,	'robot_id': ir	}
 				frontiersRecord.append(record)
 #-------------------------------------------------------------------------        
-
 		#Plotting
 		pp=[]	
 		for q in range(0,len(frontiers)):

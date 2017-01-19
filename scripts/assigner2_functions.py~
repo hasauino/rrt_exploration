@@ -7,6 +7,7 @@ from nav_msgs.srv import GetPlan
 from geometry_msgs.msg import PoseStamped
 from numpy import floor
 from numpy.linalg import norm
+from numpy import inf
 #________________________________________________________________________________
 class robot:
 	assigned_point=[]
@@ -71,7 +72,7 @@ class robot:
 		start=self.listener.transformPose(self.name+'/map', robot.start)
 		end=self.listener.transformPose(self.name+'/map', robot.end)
 		plan=self.make_plan(start = start, goal = end, tolerance = 0.0)
-		return plan.plan.poses
+		return plan.plan.poses	
 #________________________________________________________________________________
 
 def index_of_point(mapData,Xp):
@@ -102,7 +103,7 @@ def informationGain(mapData,point,r):
 			if (i>=0 and i<limit and i<len(mapData.data)):
 				if(mapData.data[i]==-1 and norm(array(point)-point_of_index(mapData,i))<=r):
 					infoGain+=1
-	return infoGain
+	return infoGain*(mapData.info.resolution**2)
 #________________________________________________________________________________
 
 def discount(mapData,assigned_pt,centroids,infoGain,r):
@@ -122,8 +123,16 @@ def discount(mapData,assigned_pt,centroids,infoGain,r):
 	return infoGain
 #________________________________________________________________________________
 
-
-
+def pathCost(path):
+	if (len(path)>0):
+		i=len(path)/2
+		p1=array([path[i-1].pose.position.x,path[i-1].pose.position.y])
+		p2=array([path[i].pose.position.x,path[i].pose.position.y])
+		return norm(p1-p2)*(len(path)-1)
+	else:
+		return inf
+		
+	
 
 
 
