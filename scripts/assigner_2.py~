@@ -194,7 +194,10 @@ def node():
 		for i in range(0,len(nb)):
 			infoGain=discount(mapData,robots[i].assigned_point,centroids,infoGain,info_radius)
 #-------------------------------------------------------------------------            
-		frontiersRecord=[]
+		revenue_record=[]
+		centroid_record=[]
+		id_record=[]
+		print na
 		for ir in range(0,len(na)):
 			for ip in range(0,len(centroids)):
 				cost=pathCost(robots[ir].makePlan(robots[ir].getPosition(),centroids[ip]))
@@ -202,8 +205,18 @@ def node():
 				if (norm(robots[ir].getPosition()-centroids[ip])<=hysteresis_radius):
 					information_gain*=hysteresis_gain
 				revenue=information_gain*info_multiplier-cost
-				record={'centroid':centroids[ip],	'revenue':revenue,	'robot_id': ir	}
-				frontiersRecord.append(record)
+				revenue_record.append(revenue)
+				centroid_record.append(centroids[ip])
+				id_record.append(ir)
+		
+		if (len(centroids)>3):
+			winner_id=id_record[revenue_record.index(max(revenue_record))]
+			robots[winner_id].sendGoal(centroid_record[winner_id])
+			print "assinged to robot ",winner_id+1
+			rospy.sleep(0.5)
+		
+		
+				
 #-------------------------------------------------------------------------        
 		#Plotting
 		pp=[]	
