@@ -56,7 +56,7 @@ def mapCallBack(data):
 
 def node():
 
-	global frontiers,mapData,gain_cent=[]
+	global frontiers,mapData
 	rospy.init_node('assigner', anonymous=False)
 	
 	# fetching all parameters
@@ -148,6 +148,8 @@ def node():
 	for i in range(0,n_robots):
 		robots[i].sendGoal(robots[i].getPosition())
 	
+	k=1
+	
 #-------------------------------------------------------------------------
 #---------------------     Main   Loop     -------------------------------
 #-------------------------------------------------------------------------
@@ -179,7 +181,12 @@ def node():
 #Get information gain for each frontier point
 		infoGain=[]
 		for ip in range(0,len(centroids)):
-			infoGain.append(informationGain(mapData,[centroids[ip][0],centroids[ip][1]],info_radius))			
+			infoGain.append(informationGain(mapData,[centroids[ip][0],centroids[ip][1]],info_radius))
+		
+		print "before:  ",infoGain
+		if len(centroids)>2 and k==1:
+			robots[2].sendGoal(centroids[0])
+			k=0
 #-------------------------------------------------------------------------			
 #get number of available/busy robots
 		na=[] #available robots
@@ -193,16 +200,18 @@ def node():
 #------------------------------------------------------------------------- 
 #get dicount and update informationGain
 		for i in range(0,len(nb)):
-			infoGain=discount(mapData,robots[nb].assigned_point,centroids,infoGain,info_radius)
+			infoGain=discount(mapData,robots[i].assigned_point,centroids,infoGain,info_radius)
+		print "after:  ",infoGain
 #-------------------------------------------------------------------------            
 		frontiersRecord=[]
 		for ir in range(0,len(na)):
 			for ip in range(0,len(centroids)):
 				cost=len(robots[ir].makePlan(robots[ir].getPosition(),centroids[ip]))
-				discount=0
-				hysteresis=1
-				information_gain=infoGain[ip]*hysteresis
-				revenue=information_gain-discount-cost
+				#discount=0
+				#hysteresis=1
+				#information_gain=infoGain[ip]*hysteresis
+				#revenue=information_gain-discount-cost
+				revenue=0
 				record={'centroid':centroids[ip],	'revenue':revenue,	'robot_id': ir	}
 				frontiersRecord.append(record)
 
