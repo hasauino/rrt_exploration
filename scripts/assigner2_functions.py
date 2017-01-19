@@ -105,8 +105,10 @@ def informationGain(mapData,point,r):
 	return infoGain
 #________________________________________________________________________________
 
-def discount(mapData,assigned_pt,centroids,infoGain,r):	
-	index=index_of_point(mapData,current_pt)
+def discount(mapData,assigned_pt,gain_cent,r):
+	centroids=gain_cent[0]	
+	infoGain=gain_cent[1]	
+	index=index_of_point(mapData,assigned_pt)
 	r_region=int(r/mapData.info.resolution)
 	init_index=index-r_region*(mapData.info.width+1)
 	for n in range(0,2*r_region+1):
@@ -115,11 +117,11 @@ def discount(mapData,assigned_pt,centroids,infoGain,r):
 		limit=((start/mapData.info.width)+2)*mapData.info.width	
 		for i in range(start,end+1):	
 			if (i>=0 and i<limit and i<len(mapData.data)):
-				for j in range(0,len(frontiers)):
+				for j in range(0,len(centroids)):
 					current_pt=centroids[j]
 					if(mapData.data[i]==-1 and norm(point_of_index(mapData,i)-current_pt)<=r and norm(point_of_index(mapData,i)-assigned_pt)<=r):
 						infoGain[j]-=1
-	return infoGain
+	return gain_cent
 #________________________________________________________________________________
 
 

@@ -25,7 +25,7 @@ from numpy import linalg as LA
 from numpy import all as All
 from numpy import inf
 from functions import Nearest,Nearest2,Steer,Near,ObstacleFree2,Find,Cost,prepEdges,gridValue
-from assigner2_functions import robot,informationGain
+from assigner2_functions import robot,informationGain,discount
 from sklearn.cluster import KMeans
 from sklearn.cluster import MeanShift
 import numpy as np
@@ -191,7 +191,7 @@ def node():
 				na.append(i)	
 #------------------------------------------------------------------------- 
 #get dicount and update informationGain
-		for i in range(0,nb):
+		for i in range(0,len(nb)):
 			infoGain=discount(mapData,robots[nb].assigned_point,centroids,infoGain,info_radius)
 #-------------------------------------------------------------------------            
 		frontiersRecord=[]
