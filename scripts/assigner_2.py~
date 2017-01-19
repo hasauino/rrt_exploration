@@ -38,6 +38,7 @@ from assigner2_functions import robot
 mapData=OccupancyGrid()
 frontiers=[]
 
+
 def callBack(data):
 	global frontiers,min_distance
 	x=[array([data.x,data.y])]
@@ -55,7 +56,7 @@ def mapCallBack(data):
 
 def node():
 
-	global frontiers,mapData
+	global frontiers,mapData,gain_cent=[]
 	rospy.init_node('assigner', anonymous=False)
 	
 	# fetching all parameters
