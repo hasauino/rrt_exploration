@@ -61,11 +61,13 @@ def node():
 	
 	# fetching all parameters
 	map_topic= rospy.get_param('~map_topic','/map_merge/map')
-	info_radius= rospy.get_param('~info_radius',1.0)
-	goals_topic= rospy.get_param('~goals_topic','/exploration_goals')
+	info_radius= rospy.get_param('~info_radius',1.0)					#this can be smaller than the laser scanner range, >> smaller >>less computation time>> too small is not good, info gain won't be accurate
+	hysteresis_radius=rospy.get_param('~hysteresis_radius',5.0)			#at least as much as the laser scanner range
+	hysteresis_gain=rospy.get_param('~hysteresis_gain',2.0)				#bigger than 1 (biase robot to continue exploring current region
+	goals_topic= rospy.get_param('~goals_topic','/exploration_goals')	
 	n_robots = rospy.get_param('~n_robots',3)
 	global_frame=rospy.get_param('~global_frame','/robot_1/map')
-	
+
 	rate = rospy.Rate(100)
 #-------------------------------------------
 	rospy.Subscriber(map_topic, OccupancyGrid, mapCallBack)
@@ -200,13 +202,12 @@ def node():
 		for ir in range(0,len(na)):
 			for ip in range(0,len(centroids)):
 				cost=len(robots[ir].makePlan(robots[ir].getPosition(),centroids[ip]))
-				#hysteresis=1
-				#information_gain=infoGain[ip]*hysteresis
-				#revenue=information_gain-discount-cost
-				revenue=0
+				information_gain=infoGain[ip]
+				if (norm(robots[ir].getPosition()-centroids[ip])<=hysteresis_radius):
+					information_gain*=hysteresis_gain
+				revenue=information_gain-cost
 				record={'centroid':centroids[ip],	'revenue':revenue,	'robot_id': ir	}
 				frontiersRecord.append(record)
-
 #-------------------------------------------------------------------------        
 
 		#Plotting
