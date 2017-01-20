@@ -8,14 +8,15 @@ from geometry_msgs.msg import PoseStamped
 from numpy import floor
 from numpy.linalg import norm
 from numpy import inf
+from copy import copy
 #________________________________________________________________________________
 class robot:
-	assigned_point=[]
 	goal = MoveBaseGoal()
 	start = PoseStamped()
 	end = PoseStamped()
 	
 	def __init__(self,name):
+		self.assigned_point=[]
 		self.name=name
 		self.global_frame=rospy.get_param('~global_frame','/robot_1/map')
 		self.listener=tf.TransformListener()
@@ -28,7 +29,7 @@ class robot:
 			except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
 				cond==0
 		self.position=array([trans[0],trans[1]])		
-		robot.assigned_point=self.position
+		self.assigned_point=self.position
 		self.client=actionlib.SimpleActionClient(self.name+'/move_base', MoveBaseAction)
 		self.client.wait_for_server()
 		robot.goal.target_pose.header.frame_id=self.global_frame
@@ -55,11 +56,11 @@ class robot:
 		robot.goal.target_pose.pose.position.y=point[1]
 		robot.goal.target_pose.pose.orientation.w = 1.0
 		self.client.send_goal(robot.goal)
-		robot.assigned_point=array(point)
+		self.assigned_point=array(point)
 	
 	def cancelGoal(self):
 		self.client.cancel_goal()
-		robot.assigned_point=self.getPosition()
+		self.assigned_point=self.getPosition()
 	
 	def getState(self):
 		return self.client.get_state()

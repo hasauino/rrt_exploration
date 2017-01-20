@@ -220,7 +220,9 @@ def node():
 			rospy.sleep(1.0)
 		
 		
-				
+		print 'robot 0 assigned: ',robots[0].assigned_point
+		print 'robot 1 assigned: ',robots[1].assigned_point
+		print 'robot 2 assigned: ',robots[2].assigned_point
 #-------------------------------------------------------------------------        
 		#Plotting
 		pp=[]	
