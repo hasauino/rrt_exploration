@@ -63,7 +63,7 @@ def node():
 	map_topic= rospy.get_param('~map_topic','/map_merge/map')
 	info_radius= rospy.get_param('~info_radius',1.0)					#this can be smaller than the laser scanner range, >> smaller >>less computation time>> too small is not good, info gain won't be accurate
 	info_multiplier=rospy.get_param('~info_multiplier',3.0)		
-	hysteresis_radius=rospy.get_param('~hysteresis_radius',5.0)			#at least as much as the laser scanner range
+	hysteresis_radius=rospy.get_param('~hysteresis_radius',3.0)			#at least as much as the laser scanner range
 	hysteresis_gain=rospy.get_param('~hysteresis_gain',2.0)				#bigger than 1 (biase robot to continue exploring current region
 	goals_topic= rospy.get_param('~goals_topic','/exploration_goals')	
 	n_robots = rospy.get_param('~n_robots',3)
@@ -191,7 +191,7 @@ def node():
 				na.append(i)	
 #------------------------------------------------------------------------- 
 #get dicount and update informationGain
-		for i in range(0,len(nb)):
+		for i in nb:
 			infoGain=discount(mapData,robots[i].assigned_point,centroids,infoGain,info_radius)
 #-------------------------------------------------------------------------            
 		revenue_record=[]
@@ -199,22 +199,22 @@ def node():
 		id_record=[]
 		print 'avaiable robots: ',na
 		for ir in na:
-			for point in centroids:
-				cost=pathCost(robots[ir].makePlan(robots[ir].getPosition(),point))
-				print cost
+			for ip in range(0,len(centroids)):
+				cost=pathCost(robots[ir].makePlan(robots[ir].getPosition(),centroids[ip]))
 				information_gain=infoGain[ip]
-				if (norm(robots[ir].getPosition()-point)<=hysteresis_radius):
+				print 'cost= ',cost,'    infoGain= ',information_gain
+				if (norm(robots[ir].getPosition()-centroids[ip])<=hysteresis_radius):
 					information_gain*=hysteresis_gain
 				revenue=information_gain*info_multiplier-cost
 				revenue_record.append(revenue)
-				centroid_record.append(point)
+				centroid_record.append(centroids[ip])
 				id_record.append(ir)
 		
 		if ((len(centroids)>2 or k==1) and len(id_record)>0):
 			k=1
 			winner_id=revenue_record.index(max(revenue_record))
 			robots[id_record[winner_id]].sendGoal(centroid_record[winner_id])
-			print "assinged to robot ",winner_id, '             point:  ',centroid_record[winner_id]
+			print "assinged to robot ",id_record[winner_id], '             point:  ',centroid_record[winner_id]
 			print centroid_record
 			print revenue_record
 			rospy.sleep(1.0)
