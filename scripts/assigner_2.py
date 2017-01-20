@@ -213,7 +213,7 @@ def node():
 		if ((len(centroids)>2 or k==1) and len(id_record)>0):
 			k=1
 			winner_id=revenue_record.index(max(revenue_record))
-			robots[winner_id].sendGoal(centroid_record[winner_id])
+			robots[id_record[winner_id]].sendGoal(centroid_record[winner_id])
 			print "assinged to robot ",winner_id, '             point:  ',centroid_record[winner_id]
 			print centroid_record
 			print revenue_record
