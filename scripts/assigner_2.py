@@ -198,7 +198,7 @@ def node():
 		centroid_record=[]
 		id_record=[]
 		print 'avaiable robots: ',na
-		for ir in range na:
+		for ir in na:
 			for ip in range(0,len(centroids)):
 				cost=pathCost(robots[ir].makePlan(robots[ir].getPosition(),centroids[ip]))
 				print cost
