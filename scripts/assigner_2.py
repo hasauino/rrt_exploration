@@ -18,6 +18,7 @@ import tf
 
 
 
+from time import time
 from os import system
 from random import random
 from numpy import array,concatenate,vstack,delete,floor,ceil
@@ -66,7 +67,7 @@ def node():
 	hysteresis_radius=rospy.get_param('~hysteresis_radius',3.0)			#at least as much as the laser scanner range
 	hysteresis_gain=rospy.get_param('~hysteresis_gain',2.0)				#bigger than 1 (biase robot to continue exploring current region
 	goals_topic= rospy.get_param('~goals_topic','/exploration_goals')	
-	n_robots = rospy.get_param('~n_robots',1)
+	n_robots = rospy.get_param('~n_robots',3)
 	global_frame=rospy.get_param('~global_frame','/robot_1/map')
 
 	rate = rospy.Rate(100)
@@ -197,10 +198,10 @@ def node():
 		revenue_record=[]
 		centroid_record=[]
 		id_record=[]
-
+		t1=time()
 		for ir in na:
 			for ip in range(0,len(centroids)):
-				cost=pathCost(robots[ir].makePlan(robots[ir].getPosition(),centroids[ip]))
+				cost=norm(robots[ir].getPosition()-centroids[ip])	#pathCost(robots[ir].makePlan(robots[ir].getPosition(),centroids[ip]))
 				information_gain=infoGain[ip]
 				if (norm(robots[ir].getPosition()-centroids[ip])<=hysteresis_radius):
 					information_gain*=hysteresis_gain
@@ -208,7 +209,7 @@ def node():
 				revenue_record.append(revenue)
 				centroid_record.append(centroids[ip])
 				id_record.append(ir)
-		
+		print 'time= ',time()-t1
 		if ((len(centroids)>2 or k==1) and len(id_record)>0):
 			k=1
 			winner_id=revenue_record.index(max(revenue_record))
