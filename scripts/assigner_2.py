@@ -66,7 +66,7 @@ def node():
 	hysteresis_radius=rospy.get_param('~hysteresis_radius',3.0)			#at least as much as the laser scanner range
 	hysteresis_gain=rospy.get_param('~hysteresis_gain',2.0)				#bigger than 1 (biase robot to continue exploring current region
 	goals_topic= rospy.get_param('~goals_topic','/exploration_goals')	
-	n_robots = rospy.get_param('~n_robots',3)
+	n_robots = rospy.get_param('~n_robots',1)
 	global_frame=rospy.get_param('~global_frame','/robot_1/map')
 
 	rate = rospy.Rate(100)
@@ -98,10 +98,10 @@ def node():
 #Set the marker action for latched frontiers.  Options are ADD, DELETE, and new in ROS Indigo: 3 (DELETEALL)
 	points.action = Marker.ADD;
 
-	points.pose.orientation.w = 1.0;
+	points.pose.orientation.w = 1.0
 
-	points.scale.x=0.2;
-	points.scale.y=0.2; 
+	points.scale.x=0.2
+	points.scale.y=0.2 
 
 	points.color.r = 255.0/255.0
 	points.color.g = 255.0/255.0
@@ -168,7 +168,7 @@ def node():
 #Clustering frontier points
 		centroids=[]
 		if len(frontiers)>1:
-			ms = MeanShift(bandwidth=0.5)   
+			ms = MeanShift(bandwidth=2.0)   
 			ms.fit(frontiers)
 			centroids= ms.cluster_centers_	 #centroids array is the centers of each cluster
 
@@ -215,6 +215,11 @@ def node():
 			robots[id_record[winner_id]].sendGoal(centroid_record[winner_id])
 			rospy.sleep(1.0)
 
+#------------------------------------------------------------------------- 
+#cancel mission if the point is no longer unknown
+		for i in nb:
+			if gridValue(mapData,robots[i].assigned_point)!=-1:
+				robots[i].cancelGoal()				
 #-------------------------------------------------------------------------
 #Plotting
 		pp=[]	
