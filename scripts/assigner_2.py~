@@ -38,6 +38,9 @@ from assigner2_functions import robot
 # Subscribers' callbacks------------------------------
 mapData=OccupancyGrid()
 frontiers=[]
+global1=OccupancyGrid()
+global2=OccupancyGrid()
+global3=OccupancyGrid()
 
 def callBack(data):
 	global frontiers,min_distance
@@ -51,12 +54,24 @@ def callBack(data):
 def mapCallBack(data):
     global mapData
     mapData=data
+
+def globalMap1(data):
+    global global1
+    global1=data
+    
+def globalMap2(data):
+    global global2
+    global2=data
+
+def globalMap3(data):
+    global global3
+    global3=data
     
 # Node----------------------------------------------
 
 def node():
 	k=0
-	global frontiers,mapData
+	global frontiers,mapData,global1,global2,global3
 	rospy.init_node('assigner', anonymous=False)
 	
 	# fetching all parameters
@@ -72,6 +87,9 @@ def node():
 	rate = rospy.Rate(100)
 #-------------------------------------------
 	rospy.Subscriber(map_topic, OccupancyGrid, mapCallBack)
+	rospy.Subscriber('/robot_1/move_base_node/global_costmap/costmap', OccupancyGrid, globalMap1)
+	rospy.Subscriber('/robot_2/move_base_node/global_costmap/costmap', OccupancyGrid, globalMap2)
+	rospy.Subscriber('/robot_3/move_base_node/global_costmap/costmap', OccupancyGrid, globalMap3)
 	rospy.Subscriber(goals_topic, Point, callBack)
 	pub = rospy.Publisher('frontiers', Marker, queue_size=10)
 	pub2 = rospy.Publisher('centroids', Marker, queue_size=10)
@@ -202,8 +220,8 @@ def node():
 			for ip in range(0,len(centroids)):
 				cost=norm(robots[ir].getPosition()-centroids[ip])		
 				#cost=pathCost(robots[ir].makePlan(robots[ir].getPosition(),centroids[ip]))  #old cost calculation, slow, takes around 0.2 sec for each iteration
-				#if unvalid(mapData,centroids[ip]):
-				#	cost=inf
+				if 	gridValue(global1,centroids[ip])>50 or gridValue(global2,centroids[ip])>50 or gridValue(global3,centroids[ip])>50:
+					cost=inf
 				information_gain=infoGain[ip]
 				if (norm(robots[ir].getPosition()-centroids[ip])<=hysteresis_radius):
 					information_gain*=hysteresis_gain
