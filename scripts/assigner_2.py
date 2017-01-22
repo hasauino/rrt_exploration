@@ -198,6 +198,8 @@ def node():
 		infoGain=[]
 		for ip in range(0,len(centroids)):
 			infoGain.append(informationGain(mapData,[centroids[ip][0],centroids[ip][1]],info_radius))
+#-------------------------------------------------------------------------		
+		print 'infoGain before discount: ',infoGain
 #-------------------------------------------------------------------------			
 #get number of available/busy robots
 		na=[] #available robots
@@ -206,11 +208,16 @@ def node():
 			if (robots[i].getState()==1):
 				nb.append(i)
 			else:
-				na.append(i)	
+				na.append(i)
+#------------------------------------------------------------------------- 
+		print 'available robots: ',na			
 #------------------------------------------------------------------------- 
 #get dicount and update informationGain
 		for i in nb:
 			infoGain=discount(mapData,robots[i].assigned_point,centroids,infoGain,info_radius)
+
+#-------------------------------------------------------------------------		
+		print 'infoGain after discount: ',infoGain
 #-------------------------------------------------------------------------            
 		revenue_record=[]
 		centroid_record=[]
@@ -229,6 +236,11 @@ def node():
 				revenue_record.append(revenue)
 				centroid_record.append(centroids[ip])
 				id_record.append(ir)
+
+#-------------------------------------------------------------------------		
+		print 'revenue_record: ',revenue_record,'\n'
+		print 'centroid_record: ',centroid_record,'\n'
+#-------------------------------------------------------------------------	
 		if ((len(centroids)>2 or k==1) and len(id_record)>0):
 			k=1
 			winner_id=revenue_record.index(max(revenue_record))
@@ -240,7 +252,12 @@ def node():
 #cancel mission if the point is no longer unknown
 		for i in nb:
 			if gridValue(mapData,robots[i].assigned_point)!=-1:
-				robots[i].cancelGoal()				
+				robots[i].cancelGoal()
+				print 'aborting for robot_',i,'        point: ',robots[i].assigned_point
+				
+				print '____________________________________'
+				print '\n \n'
+			
 #-------------------------------------------------------------------------
 #Plotting
 		pp=[]	
