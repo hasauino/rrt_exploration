@@ -26,7 +26,7 @@ from numpy import linalg as LA
 from numpy import all as All
 from numpy import inf
 from functions import Nearest,Nearest2,Steer,Near,ObstacleFree2,Find,Cost,prepEdges,gridValue
-from assigner2_functions import robot,informationGain,discount,pathCost
+from assigner2_functions import robot,informationGain,discount,pathCost,unvalid
 from sklearn.cluster import KMeans
 from sklearn.cluster import MeanShift
 import numpy as np
@@ -38,7 +38,6 @@ from assigner2_functions import robot
 # Subscribers' callbacks------------------------------
 mapData=OccupancyGrid()
 frontiers=[]
-
 
 def callBack(data):
 	global frontiers,min_distance
@@ -198,10 +197,13 @@ def node():
 		revenue_record=[]
 		centroid_record=[]
 		id_record=[]
-		t1=time()
+		
 		for ir in na:
 			for ip in range(0,len(centroids)):
-				cost=norm(robots[ir].getPosition()-centroids[ip])	#pathCost(robots[ir].makePlan(robots[ir].getPosition(),centroids[ip]))
+				cost=norm(robots[ir].getPosition()-centroids[ip])		
+				#cost=pathCost(robots[ir].makePlan(robots[ir].getPosition(),centroids[ip]))  #old cost calculation, slow, takes around 0.2 sec for each iteration
+				#if unvalid(mapData,centroids[ip]):
+				#	cost=inf
 				information_gain=infoGain[ip]
 				if (norm(robots[ir].getPosition()-centroids[ip])<=hysteresis_radius):
 					information_gain*=hysteresis_gain
@@ -209,11 +211,11 @@ def node():
 				revenue_record.append(revenue)
 				centroid_record.append(centroids[ip])
 				id_record.append(ir)
-		print 'time= ',time()-t1
 		if ((len(centroids)>2 or k==1) and len(id_record)>0):
 			k=1
 			winner_id=revenue_record.index(max(revenue_record))
 			robots[id_record[winner_id]].sendGoal(centroid_record[winner_id])
+			print 'robot_',id_record[winner_id], 'assigned to ',centroid_record[winner_id]
 			rospy.sleep(1.0)
 
 #------------------------------------------------------------------------- 
