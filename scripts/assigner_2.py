@@ -178,7 +178,8 @@ def node():
 #clearing old frontiers         
 		z=0
 		while z<len(frontiers):
-			if gridValue(mapData,frontiers[z])!=-1:
+			threshold=1
+			if ((gridValue(mapData,frontiers[z])!=-1) or (gridValue(global1,frontiers[z])>threshold) or (gridValue(global2,frontiers[z])>threshold) or (gridValue(global2,frontiers[z])>threshold)):
 				frontiers=delete(frontiers, (z), axis=0)
 				z=z-1
 			z+=1
@@ -198,8 +199,6 @@ def node():
 		infoGain=[]
 		for ip in range(0,len(centroids)):
 			infoGain.append(informationGain(mapData,[centroids[ip][0],centroids[ip][1]],info_radius))
-#-------------------------------------------------------------------------		
-		print 'infoGain before discount: ',infoGain
 #-------------------------------------------------------------------------			
 #get number of available/busy robots
 		na=[] #available robots
@@ -215,9 +214,6 @@ def node():
 #get dicount and update informationGain
 		for i in nb:
 			infoGain=discount(mapData,robots[i].assigned_point,centroids,infoGain,info_radius)
-
-#-------------------------------------------------------------------------		
-		print 'infoGain after discount: ',infoGain
 #-------------------------------------------------------------------------            
 		revenue_record=[]
 		centroid_record=[]
@@ -227,7 +223,8 @@ def node():
 			for ip in range(0,len(centroids)):
 				cost=norm(robots[ir].getPosition()-centroids[ip])		
 				#cost=pathCost(robots[ir].makePlan(robots[ir].getPosition(),centroids[ip]))  #old cost calculation, slow, takes around 0.2 sec for each iteration
-				if 	gridValue(global1,centroids[ip])>50 or gridValue(global2,centroids[ip])>50 or gridValue(global3,centroids[ip])>50:
+				threshold=1
+				if 	gridValue(global1,centroids[ip])>threshold or gridValue(global2,centroids[ip])>threshold or gridValue(global3,centroids[ip])>threshold:
 					cost=inf
 				information_gain=infoGain[ip]
 				if (norm(robots[ir].getPosition()-centroids[ip])<=hysteresis_radius):
@@ -240,6 +237,8 @@ def node():
 #-------------------------------------------------------------------------		
 		print 'revenue_record: ',revenue_record,'\n'
 		print 'centroid_record: ',centroid_record,'\n'
+		print '\n \n '
+		print '_________________________________________'
 #-------------------------------------------------------------------------	
 		if ((len(centroids)>2 or k==1) and len(id_record)>0):
 			k=1
@@ -247,17 +246,12 @@ def node():
 			robots[id_record[winner_id]].sendGoal(centroid_record[winner_id])
 			print 'robot_',id_record[winner_id], 'assigned to ',centroid_record[winner_id]
 			rospy.sleep(1.0)
-
 #------------------------------------------------------------------------- 
 #cancel mission if the point is no longer unknown
 		for i in nb:
 			if gridValue(mapData,robots[i].assigned_point)!=-1:
 				robots[i].cancelGoal()
-				print 'aborting for robot_',i,'        point: ',robots[i].assigned_point
-				
-				print '____________________________________'
-				print '\n \n'
-			
+				print 'aborting for robot_',i
 #-------------------------------------------------------------------------
 #Plotting
 		pp=[]	
