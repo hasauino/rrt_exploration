@@ -212,7 +212,7 @@ def node():
 		print 'available robots: ',na			
 #------------------------------------------------------------------------- 
 #get dicount and update informationGain
-		for i in nb:
+		for i in nb+na:#_____________________________________________________________________________________TESTING
 			infoGain=discount(mapData,robots[i].assigned_point,centroids,infoGain,info_radius)
 #-------------------------------------------------------------------------            
 		revenue_record=[]
@@ -240,7 +240,7 @@ def node():
 		print '\n \n '
 		print '_________________________________________'
 #-------------------------------------------------------------------------	
-		if ((len(centroids)>2 or k==1) and len(id_record)>0):
+		if ((len(centroids)>3 or k==1) and len(id_record)>0):#_____________________________________________________________________________________TESTING
 			k=1
 			winner_id=revenue_record.index(max(revenue_record))
 			robots[id_record[winner_id]].sendGoal(centroid_record[winner_id])
