@@ -116,7 +116,7 @@ line.scale.y= 0.03;
 points.scale.x=0.3; 
 points.scale.y=0.3; 
 
-line.color.r =0.0/255.0;
+line.color.r =255.0/255.0;
 line.color.g= 0.0/255.0;
 line.color.b =0.0/255.0;
 points.color.r = 255.0/255.0;
