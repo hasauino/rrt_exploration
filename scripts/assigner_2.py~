@@ -240,7 +240,7 @@ def node():
 		print '\n \n '
 		print '_________________________________________'
 #-------------------------------------------------------------------------	
-		if ((len(centroids)>3 or k==1) and len(id_record)>0):#_____________________________________________________________________________________TESTING
+		if ((len(centroids)>0 or k==1) and len(id_record)>0):#_____________________________________________________________________________________TESTING
 			k=1
 			winner_id=revenue_record.index(max(revenue_record))
 			robots[id_record[winner_id]].sendGoal(centroid_record[winner_id])
