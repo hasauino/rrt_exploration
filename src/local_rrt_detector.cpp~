@@ -64,7 +64,7 @@ int main(int argc, char **argv)
   MTRand drand; // double in [0, 1) generator, already init
 
 // generate the same numbers as in the original C test program
-  ros::init(argc, argv, "rrt_frontier_detector");
+  ros::init(argc, argv, "local_rrt_frontier_detector");
   ros::NodeHandle nh;
   
   // fetching all parameters
@@ -76,12 +76,13 @@ int main(int argc, char **argv)
 
   ros::param::param<float>(ns+"/eta", eta, 0.5);
   ros::param::param<std::string>(ns+"/map_topic", map_topic, "/robot_1/map"); 
+  ros::param::param<std::string>(ns+"/robot_frame", base_frame_topic, "/robot_1/base_link"); 
 //---------------------------------------------------------------
 ros::Subscriber sub= nh.subscribe(map_topic, 100 ,mapCallBack);	
 ros::Subscriber rviz_sub= nh.subscribe("/clicked_point", 100 ,rvizCallBack);	
 
 ros::Publisher targetspub = nh.advertise<geometry_msgs::Point>("/exploration_goals", 10);
-ros::Publisher pub = nh.advertise<visualization_msgs::Marker>("shapes", 10);
+ros::Publisher pub = nh.advertise<visualization_msgs::Marker>(ns+"_shapes", 10);
 
 ros::Rate rate(100); 
  
@@ -115,14 +116,14 @@ line.scale.y= 0.03;
 points.scale.x=0.3; 
 points.scale.y=0.3; 
 
-line.color.r =9.0/255.0;
-line.color.g= 91.0/255.0;
-line.color.b =236.0/255.0;
+line.color.r =0.0/255.0;
+line.color.g= 0.0/255.0;
+line.color.b =0.0/255.0;
 points.color.r = 255.0/255.0;
 points.color.g = 0.0/255.0;
 points.color.b = 0.0/255.0;
 points.color.a=0.3;
-line.color.a = 0.3;
+line.color.a = 1.0;
 points.lifetime = ros::Duration();
 line.lifetime = ros::Duration();
 
@@ -188,7 +189,7 @@ int i=0;
 float xr,yr;
 std::vector<float> x_rand,x_nearest,x_new;
 
-
+tf::TransformListener listener;
 // Main loop
 while (ros::ok()){
 
@@ -225,7 +226,25 @@ char   checking=ObstacleFree(x_nearest,x_new,mapData);
           	pub.publish(points) ;
           	targetspub.publish(exploration_goal);
 		  	points.points.clear();
-        	
+		  	V.clear();
+		  	
+		  	
+			tf::StampedTransform transform;
+			int  temp=0;
+			while (temp==0){
+			try{
+			temp=1;
+			listener.lookupTransform(map_topic, base_frame_topic , ros::Time(0), transform);
+			}
+			catch (tf::TransformException ex){
+			temp=0;
+			ros::Duration(0.1).sleep();
+			}}
+			
+			x_new[0]=transform.getOrigin().x();
+			x_new[1]=transform.getOrigin().y();
+        	V.push_back(x_new);
+        	line.points.clear();
         	}
 	  	
 	  

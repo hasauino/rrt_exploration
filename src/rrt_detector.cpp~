@@ -219,17 +219,12 @@ char   checking=ObstacleFree(x_nearest,x_new,mapData);
           	exploration_goal.y=x_new[1];
           	exploration_goal.z=0.0;
           	p.x=x_new[0]; 
-		p.y=x_new[1]; 
-		p.z=0.0;
+			p.y=x_new[1]; 
+			p.z=0.0;
           	points.points.push_back(p);
           	pub.publish(points) ;
-          	
-
           	targetspub.publish(exploration_goal);
-
-
-	  	
-	  	points.points.clear();
+		  	points.points.clear();
         	
         	}
 	  	

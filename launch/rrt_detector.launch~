@@ -8,6 +8,27 @@
   <param name="map_topic" value="/map_merge/map"/>
   <!--param name="map_topic" value="/robot_1/map"/-->
   </node>
+  
+  <node pkg="rrt_exploration" type="local_rrt_detector" name="robot1_rrt_detector" output="screen">
+  <param name="eta" value="4.0"/>
+  <param name="map_topic" value="/robot_1/map"/>
+  <param name="robot_frame" value="/robot_1/base_link"/>
+  <!--param name="map_topic" value="/robot_1/map"/-->
+  </node>
+  
+  <node pkg="rrt_exploration" type="local_rrt_detector" name="robot2_rrt_detector" output="screen">
+  <param name="eta" value="4.0"/>
+  <param name="map_topic" value="/robot_2/map"/>
+  <param name="robot_frame" value="/robot_2/base_link"/>
+  <!--param name="map_topic" value="/robot_1/map"/-->
+  </node>
+  
+  <node pkg="rrt_exploration" type="local_rrt_detector" name="robot3_rrt_detector" output="screen">
+  <param name="eta" value="4.0"/>
+  <param name="map_topic" value="/robot_3/map"/>
+  <param name="robot_frame" value="/robot_3/base_link"/>
+  <!--param name="map_topic" value="/robot_1/map"/-->
+  </node>
  
   <!--node pkg="rrt_exploration" type="assigner.py" name="assigner">
   <param name="n_robots" value="3"/>
