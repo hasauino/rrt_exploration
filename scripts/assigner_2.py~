@@ -175,7 +175,8 @@ def node():
 	while not rospy.is_shutdown():
 
 #-------------------------------------------------------------------------	
-#clearing old frontiers         
+#clearing old frontiers  
+      
 		z=0
 		while z<len(frontiers):
 			threshold=1
@@ -187,13 +188,14 @@ def node():
 #Clustering frontier points
 		centroids=[]
 		if len(frontiers)>1:
-			ms = MeanShift(bandwidth=2.0)   
+			ms = MeanShift(bandwidth=0.5)   
 			ms.fit(frontiers)
 			centroids= ms.cluster_centers_	 #centroids array is the centers of each cluster
 
 		#if there is only one frontier no need for clustering, i.e. centroids=frontiers
 		if len(frontiers)==1:
 			centroids=frontiers		
+		
 #-------------------------------------------------------------------------			
 #Get information gain for each frontier point
 		infoGain=[]
