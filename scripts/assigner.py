@@ -81,18 +81,18 @@ def node():
 	rate = rospy.Rate(100)
 #-------------------------------------------
 	rospy.Subscriber(map_topic, OccupancyGrid, mapCallBack)
-	
-	for i in range(0,n_robots):
-		rospy.Subscriber('/robot_'+str(i+1)+'/move_base_node/global_costmap/costmap', OccupancyGrid, globalMap)
-
 	rospy.Subscriber(goals_topic, Point, callBack)
 	pub = rospy.Publisher('frontiers', Marker, queue_size=10)
 	pub2 = rospy.Publisher('centroids', Marker, queue_size=10)
 #---------------------------------------------------------------------------------------------------------------
-
+	
 
 	for i in range(0,n_robots):
- 		 globalmaps.append(OccupancyGrid())  
+ 		 globalmaps.append(OccupancyGrid()) 
+ 		 
+ 	for i in range(0,n_robots):
+		rospy.Subscriber('/robot_'+str(i+1)+'/move_base_node/global_costmap/costmap', OccupancyGrid, globalMap) 
+		
 # wait if no frontier is received yet 
 	while len(frontiers)<1:
 		pass	
@@ -106,6 +106,9 @@ def node():
 	
 	global_frame="/"+mapData.header.frame_id
 
+
+	rospy.loginfo("global costmaps and the map are received")
+	
 	points=Marker()
 	points_clust=Marker()
 #Set the frame ID and timestamp.  See the TF tutorials for information on these.
@@ -134,16 +137,11 @@ def node():
 
 	p=Point()
 
-
 	p.z = 0;
 
 	pp=[]
 	pl=[]
-    	
-    	
-    	
-    	
-    	
+	
 	points_clust.header.frame_id= "/robot_1/map"
 	points_clust.header.stamp= rospy.Time.now()
 
@@ -214,9 +212,10 @@ def node():
 			if (robots[i].getState()==1):
 				nb.append(i)
 			else:
-				na.append(i)
-#------------------------------------------------------------------------- 
-		print 'available robots: ',na			
+				na.append(i)	
+		
+	
+		rospy.loginfo("available robots: "+str(na))	
 #------------------------------------------------------------------------- 
 #get dicount and update informationGain
 		for i in nb+na:
@@ -241,23 +240,21 @@ def node():
 					
 				if (robots[ir].getState()==1 and (centroids[ip]==robots[i].assigned_point).all()):
 					information_gain=informationGain(mapData,[centroids[ip][0],centroids[ip][1]],info_radius)*2.0
-
-						
+		
 				revenue=information_gain*info_multiplier-cost
 				revenue_record.append(revenue)
 				centroid_record.append(centroids[ip])
 				id_record.append(ir)
-
-#-------------------------------------------------------------------------		
-		print 'revenue_record: ',revenue_record,'\n'
-		print 'centroid_record: ',centroid_record,'\n'
-		print '\n \n '
-		print '_________________________________________'
+		
+		rospy.loginfo("revenue record: "+str(revenue_record))	
+		rospy.loginfo("centroid record: "+str(centroid_record))	
+		rospy.loginfo("robot IDs record: "+str(id_record))	
+		
 #-------------------------------------------------------------------------	
 		if (len(id_record)>0):
 			winner_id=revenue_record.index(max(revenue_record))
 			robots[id_record[winner_id]].sendGoal(centroid_record[winner_id])
-			print 'robot_',id_record[winner_id], 'assigned to ',centroid_record[winner_id]
+			rospy.loginfo("robot_"+str(id_record[winner_id])+"  assigned to  "+str(centroid_record[winner_id]))	
 			rospy.sleep(0.5)
 #------------------------------------------------------------------------- 
 #Plotting
@@ -267,8 +264,6 @@ def node():
 			p.y=frontiers[q][1]
 			pp.append(copy(p))
 		points.points=pp
-	
-	
 		pp=[]	
 		for q in range(0,len(centroids)):
 			p.x=centroids[q][0]
@@ -279,9 +274,6 @@ def node():
 		pub.publish(points)
 		pub2.publish(points_clust) 
 		rate.sleep()
-
-
-
 #-------------------------------------------------------------------------
 
 if __name__ == '__main__':

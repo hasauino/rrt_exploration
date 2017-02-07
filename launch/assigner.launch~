@@ -1,7 +1,7 @@
 <!-- Launch file for the rrt-detector and the assigner -->
 
 <launch>
-  <node pkg="rrt_exploration" type="assigner_2_oneRobot.py" name="assigner" output="screen">
+  <node pkg="rrt_exploration" type="assigner.py" name="assigner" output="screen">
   <!--param name="map_topic" value="/map_merge/map"/-->
   <param name="map_topic" value="/robot_1/map"/>
   <param name="info_radius" value="1"/> 
