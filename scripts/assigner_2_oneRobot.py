@@ -41,7 +41,7 @@ frontiers=[]
 global1=OccupancyGrid()
 global2=OccupancyGrid()
 global3=OccupancyGrid()
-
+globalmaps=[]
 def callBack(data):
 	global frontiers,min_distance
 	x=[array([data.x,data.y])]
@@ -55,23 +55,17 @@ def mapCallBack(data):
     global mapData
     mapData=data
 
-def globalMap1(data):
-    global global1
+def globalMap(data):
+    global global1,globalmaps
     global1=data
-    
-def globalMap2(data):
-    global global2
-    global2=data
+    indx=int(data._connection_header['topic'][7])-1
+    globalmaps[indx]=data
 
-def globalMap3(data):
-    global global3
-    global3=data
     
 # Node----------------------------------------------
 
 def node():
-	k=0
-	global frontiers,mapData,global1,global2,global3
+	global frontiers,mapData,global1,global2,global3,globalmaps
 	rospy.init_node('assigner', anonymous=False)
 	
 	# fetching all parameters
@@ -81,31 +75,41 @@ def node():
 	hysteresis_radius=rospy.get_param('~hysteresis_radius',3.0)			#at least as much as the laser scanner range
 	hysteresis_gain=rospy.get_param('~hysteresis_gain',2.0)				#bigger than 1 (biase robot to continue exploring current region
 	goals_topic= rospy.get_param('~goals_topic','/exploration_goals')	
-	n_robots = rospy.get_param('~n_robots',1)
-	global_frame=rospy.get_param('~global_frame','/robot_1/map')
+	n_robots = rospy.get_param('~n_robots')
+#	global_frame=rospy.get_param('~global_frame','/robot_1/map')
 
 	rate = rospy.Rate(100)
 #-------------------------------------------
 	rospy.Subscriber(map_topic, OccupancyGrid, mapCallBack)
-	rospy.Subscriber('/robot_1/move_base_node/global_costmap/costmap', OccupancyGrid, globalMap1)
-	rospy.Subscriber('/robot_2/move_base_node/global_costmap/costmap', OccupancyGrid, globalMap2)
-	rospy.Subscriber('/robot_3/move_base_node/global_costmap/costmap', OccupancyGrid, globalMap3)
+	
+	for i in range(0,n_robots):
+		rospy.Subscriber('/robot_'+str(i+1)+'/move_base_node/global_costmap/costmap', OccupancyGrid, globalMap)
+
 	rospy.Subscriber(goals_topic, Point, callBack)
 	pub = rospy.Publisher('frontiers', Marker, queue_size=10)
 	pub2 = rospy.Publisher('centroids', Marker, queue_size=10)
 #---------------------------------------------------------------------------------------------------------------
 
-    	
+
+	for i in range(0,n_robots):
+ 		 globalmaps.append(OccupancyGrid())  
+# wait if no frontier is received yet 
 	while len(frontiers)<1:
 		pass	
-
-
-
+#wait if map is not received yet
+	while (len(mapData.data)<1):
+		pass
+#wait if any of robots' global costmap map is not received yet
+	for i in range(0,n_robots):
+ 		 while (len(globalmaps[i].data)<1):
+ 		 	pass
+	
+	global_frame="/"+mapData.header.frame_id
 
 	points=Marker()
 	points_clust=Marker()
 #Set the frame ID and timestamp.  See the TF tutorials for information on these.
-	points.header.frame_id= "/robot_1/map"
+	points.header.frame_id= "/"+mapData.header.frame_id
 	points.header.stamp= rospy.Time.now()
 
 	points.ns= "markers2"
@@ -180,7 +184,11 @@ def node():
 		z=0
 		while z<len(frontiers):
 			threshold=1
-			if ((gridValue(mapData,frontiers[z])!=-1) or (gridValue(global1,frontiers[z])>threshold) or (gridValue(global2,frontiers[z])>threshold) or (gridValue(global2,frontiers[z])>threshold)):
+			cond=False
+			for i in range(0,n_robots):
+				cond=(gridValue(globalmaps[i],frontiers[z])>threshold) or cond
+					
+			if ((gridValue(mapData,frontiers[z])!=-1) or  cond):
 				frontiers=delete(frontiers, (z), axis=0)
 				z=z-1
 			z+=1
@@ -221,16 +229,23 @@ def node():
 		centroid_record=[]
 		id_record=[]
 		
-		for ir in na:
+		for ir in nb+na:
 			for ip in range(0,len(centroids)):
 				cost=norm(robots[ir].getPosition()-centroids[ip])		
-				#cost=pathCost(robots[ir].makePlan(robots[ir].getPosition(),centroids[ip]))  #old cost calculation, slow, takes around 0.2 sec for each iteration
 				threshold=1
-				if 	gridValue(global1,centroids[ip])>threshold or gridValue(global2,centroids[ip])>threshold or gridValue(global3,centroids[ip])>threshold:
+				cond=False
+				for i in range(0,n_robots):
+					cond=(gridValue(globalmaps[i],centroids[ip])>threshold) or cond
+				if 	cond:
 					cost=inf
 				information_gain=infoGain[ip]
 				if (norm(robots[ir].getPosition()-centroids[ip])<=hysteresis_radius):
 					information_gain*=hysteresis_gain
+					
+				if (robots[ir].getState()==1 and (centroids[ip]==robots[i].assigned_point).all()):
+					information_gain=informationGain(mapData,[centroids[ip][0],centroids[ip][1]],info_radius)*2.0
+
+						
 				revenue=information_gain*info_multiplier-cost
 				revenue_record.append(revenue)
 				centroid_record.append(centroids[ip])
@@ -242,18 +257,17 @@ def node():
 		print '\n \n '
 		print '_________________________________________'
 #-------------------------------------------------------------------------	
-		if ((len(centroids)>0 or k==1) and len(id_record)>0):#_____________________________________________________________________________________TESTING
-			k=1
+		if (len(id_record)>0):
 			winner_id=revenue_record.index(max(revenue_record))
 			robots[id_record[winner_id]].sendGoal(centroid_record[winner_id])
 			print 'robot_',id_record[winner_id], 'assigned to ',centroid_record[winner_id]
-			rospy.sleep(1.0)
+			rospy.sleep(0.5)
 #------------------------------------------------------------------------- 
 #cancel mission if the point is no longer unknown
-		for i in nb:
-			if gridValue(mapData,robots[i].assigned_point)!=-1:
-				robots[i].cancelGoal()
-				print 'aborting for robot_',i
+#		for i in nb:
+#			if gridValue(mapData,robots[i].assigned_point)!=-1:
+#				robots[i].cancelGoal()
+#				print 'aborting for robot_',i
 #-------------------------------------------------------------------------
 #Plotting
 		pp=[]	
