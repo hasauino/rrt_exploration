@@ -74,7 +74,7 @@ def node():
 	hysteresis_radius=rospy.get_param('~hysteresis_radius',3.0)			#at least as much as the laser scanner range
 	hysteresis_gain=rospy.get_param('~hysteresis_gain',2.0)				#bigger than 1 (biase robot to continue exploring current region
 	goals_topic= rospy.get_param('~goals_topic','/exploration_goals')	
-	n_robots = rospy.get_param('~n_robots')
+	n_robots = rospy.get_param('~n_robots',1)
 #	global_frame=rospy.get_param('~global_frame','/robot_1/map')
 
 	rate = rospy.Rate(100)
