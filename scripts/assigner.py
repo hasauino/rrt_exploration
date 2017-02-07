@@ -107,7 +107,7 @@ def node():
 	global_frame="/"+mapData.header.frame_id
 
 
-	rospy.loginfo("global costmaps and the map are received")
+	rospy.loginfo("the map and global costmaps are received")
 	
 	points=Marker()
 	points_clust=Marker()
