@@ -25,15 +25,14 @@ from numpy import array,concatenate,vstack,delete,floor,ceil
 from numpy import linalg as LA
 from numpy import all as All
 from numpy import inf
-from functions import Nearest,Nearest2,Steer,Near,ObstacleFree2,Find,Cost,prepEdges,gridValue
-from assigner2_functions import robot,informationGain,discount,pathCost,unvalid
+from functions import gridValue,robot,informationGain,discount,pathCost,unvalid
 from sklearn.cluster import KMeans
 from sklearn.cluster import MeanShift
 import numpy as np
 from numpy.linalg import norm
 
 
-from assigner2_functions import robot
+
 
 # Subscribers' callbacks------------------------------
 mapData=OccupancyGrid()
