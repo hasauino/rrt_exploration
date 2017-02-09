@@ -25,7 +25,7 @@ from numpy import array,concatenate,vstack,delete,floor,ceil
 from numpy import linalg as LA
 from numpy import all as All
 from numpy import inf
-from functions import gridValue,robot,informationGain,discount,pathCost,unvalid
+from functions import gridValue,robot,informationGain,discount,pathCost,unvalid,Nearest2
 from sklearn.cluster import KMeans
 from sklearn.cluster import MeanShift
 import numpy as np
@@ -45,7 +45,8 @@ def callBack(data):
 	global frontiers,min_distance
 	x=[array([data.x,data.y])]
 	if len(frontiers)>0:
-		frontiers=vstack((frontiers,x))
+		if norm(frontiers[  Nearest2(frontiers,x)  ]-x)>1.3:
+			frontiers=vstack((frontiers,x))
 	else:
 		frontiers=x
     
@@ -74,7 +75,7 @@ def node():
 	hysteresis_radius=rospy.get_param('~hysteresis_radius',3.0)			#at least as much as the laser scanner range
 	hysteresis_gain=rospy.get_param('~hysteresis_gain',2.0)				#bigger than 1 (biase robot to continue exploring current region
 	goals_topic= rospy.get_param('~goals_topic','/exploration_goals')	
-	n_robots = rospy.get_param('~n_robots')
+	n_robots = rospy.get_param('~n_robots',1)
 #	global_frame=rospy.get_param('~global_frame','/robot_1/map')
 
 	rate = rospy.Rate(100)
@@ -106,7 +107,7 @@ def node():
 	global_frame="/"+mapData.header.frame_id
 
 
-	rospy.loginfo("the map and global costmaps are received")
+	rospy.loginfo("\n the map and global costmaps are received")
 	
 	points=Marker()
 	points_clust=Marker()
@@ -156,7 +157,7 @@ def node():
 
 	points_clust.scale.x=0.2;
 	points_clust.scale.y=0.2; 
-	points_clust.color.r = 0.0/255.0
+	points_clust.color.r = 0.0/255.
 	points_clust.color.g = 255.0/255.0
 	points_clust.color.b = 0.0/255.0
 
@@ -168,6 +169,7 @@ def node():
 		robots.append(robot('/robot_'+str(i+1)))
 	for i in range(0,n_robots):
 		robots[i].sendGoal(robots[i].getPosition())
+	print len(frontiers)
 #-------------------------------------------------------------------------
 #---------------------     Main   Loop     -------------------------------
 #-------------------------------------------------------------------------
@@ -197,7 +199,6 @@ def node():
 		#if there is only one frontier no need for clustering, i.e. centroids=frontiers
 		if len(frontiers)==1:
 			centroids=frontiers		
-		
 #-------------------------------------------------------------------------			
 #Get information gain for each frontier point
 		infoGain=[]
@@ -214,7 +215,7 @@ def node():
 				na.append(i)	
 		
 	
-		rospy.loginfo("available robots: "+str(na))	
+		rospy.loginfo("\n available robots: "+str(na))	
 #------------------------------------------------------------------------- 
 #get dicount and update informationGain
 		for i in nb+na:
@@ -266,16 +267,17 @@ def node():
 					revenue_record.append(revenue)
 					centroid_record.append(centroids[ip])
 					id_record.append(ir)
+
 		
-		rospy.loginfo("revenue record: "+str(revenue_record))	
-		rospy.loginfo("centroid record: "+str(centroid_record))	
-		rospy.loginfo("robot IDs record: "+str(id_record))	
+		rospy.loginfo("\n revenue record: "+str(revenue_record))	
+		rospy.loginfo("\n centroid record: "+str(centroid_record))	
+		rospy.loginfo("\n robot IDs record: "+str(id_record))	
 		
 #-------------------------------------------------------------------------	
 		if (len(id_record)>0):
 			winner_id=revenue_record.index(max(revenue_record))
 			robots[id_record[winner_id]].sendGoal(centroid_record[winner_id])
-			rospy.loginfo("robot_"+str(id_record[winner_id])+"  assigned to  "+str(centroid_record[winner_id]))	
+			rospy.loginfo("\n robot_"+str(id_record[winner_id])+"  assigned to  "+str(centroid_record[winner_id]))	
 			rospy.sleep(0.5)
 #------------------------------------------------------------------------- 
 #Plotting

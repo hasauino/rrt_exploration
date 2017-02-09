@@ -25,7 +25,7 @@ from numpy import array,concatenate,vstack,delete,floor,ceil
 from numpy import linalg as LA
 from numpy import all as All
 from numpy import inf
-from functions import gridValue,robot,informationGain,discount,pathCost,unvalid
+from functions import gridValue,robot,informationGain,discount,pathCost,unvalid,Nearest2
 from sklearn.cluster import KMeans
 from sklearn.cluster import MeanShift
 import numpy as np
@@ -45,7 +45,8 @@ def callBack(data):
 	global frontiers,min_distance
 	x=[array([data.x,data.y])]
 	if len(frontiers)>0:
-		frontiers=vstack((frontiers,x))
+		if norm(frontiers[  Nearest2(frontiers,x)  ]-x)>1.3:
+			frontiers=vstack((frontiers,x))
 	else:
 		frontiers=x
     
@@ -106,7 +107,7 @@ def node():
 	global_frame="/"+mapData.header.frame_id
 
 
-	rospy.loginfo("the map and global costmaps are received")
+	rospy.loginfo("\n the map and global costmaps are received")
 	
 	points=Marker()
 	points_clust=Marker()
@@ -156,7 +157,7 @@ def node():
 
 	points_clust.scale.x=0.2;
 	points_clust.scale.y=0.2; 
-	points_clust.color.r = 0.0/255.0
+	points_clust.color.r = 0.0/255.
 	points_clust.color.g = 255.0/255.0
 	points_clust.color.b = 0.0/255.0
 
@@ -168,6 +169,7 @@ def node():
 		robots.append(robot('/robot_'+str(i+1)))
 	for i in range(0,n_robots):
 		robots[i].sendGoal(robots[i].getPosition())
+	print len(frontiers)
 #-------------------------------------------------------------------------
 #---------------------     Main   Loop     -------------------------------
 #-------------------------------------------------------------------------
@@ -197,7 +199,6 @@ def node():
 		#if there is only one frontier no need for clustering, i.e. centroids=frontiers
 		if len(frontiers)==1:
 			centroids=frontiers		
-		
 #-------------------------------------------------------------------------			
 #Get information gain for each frontier point
 		infoGain=[]
@@ -214,7 +215,7 @@ def node():
 				na.append(i)	
 		
 	
-		rospy.loginfo("available robots: "+str(na))	
+		rospy.loginfo("\n available robots: "+str(na))	
 #------------------------------------------------------------------------- 
 #get dicount and update informationGain
 		for i in nb+na:
@@ -224,7 +225,7 @@ def node():
 		centroid_record=[]
 		id_record=[]
 		
-		for ir in nb+na:
+		for ir in na:
 			for ip in range(0,len(centroids)):
 				cost=norm(robots[ir].getPosition()-centroids[ip])		
 				threshold=1
@@ -235,25 +236,48 @@ def node():
 					cost=inf
 				information_gain=infoGain[ip]
 				if (norm(robots[ir].getPosition()-centroids[ip])<=hysteresis_radius):
+
 					information_gain*=hysteresis_gain
-					
-				if (robots[ir].getState()==1 and (norm(centroids[ip]-robots[ir].assigned_point))<hysteresis_radius):
-					information_gain=informationGain(mapData,[centroids[ip][0],centroids[ip][1]],info_radius)*2.0
-		
 				revenue=information_gain*info_multiplier-cost
 				revenue_record.append(revenue)
 				centroid_record.append(centroids[ip])
 				id_record.append(ir)
 		
-		rospy.loginfo("revenue record: "+str(revenue_record))	
-		rospy.loginfo("centroid record: "+str(centroid_record))	
-		rospy.loginfo("robot IDs record: "+str(id_record))	
+		if len(na)<1:
+			revenue_record=[]
+			centroid_record=[]
+			id_record=[]
+			for ir in nb:
+				for ip in range(0,len(centroids)):
+					cost=norm(robots[ir].getPosition()-centroids[ip])		
+					threshold=1
+					cond=False
+					for i in range(0,n_robots):
+						cond=(gridValue(globalmaps[i],centroids[ip])>threshold) or cond
+					if 	cond:
+						cost=inf
+					information_gain=infoGain[ip]
+					if (norm(robots[ir].getPosition()-centroids[ip])<=hysteresis_radius):
+						information_gain*=hysteresis_gain
+				
+					if ((norm(centroids[ip]-robots[ir].assigned_point))<hysteresis_radius):
+						information_gain=informationGain(mapData,[centroids[ip][0],centroids[ip][1]],info_radius)*hysteresis_gain
+
+					revenue=information_gain*info_multiplier-cost
+					revenue_record.append(revenue)
+					centroid_record.append(centroids[ip])
+					id_record.append(ir)
+
+		
+		rospy.loginfo("\n revenue record: "+str(revenue_record))	
+		rospy.loginfo("\n centroid record: "+str(centroid_record))	
+		rospy.loginfo("\n robot IDs record: "+str(id_record))	
 		
 #-------------------------------------------------------------------------	
 		if (len(id_record)>0):
 			winner_id=revenue_record.index(max(revenue_record))
 			robots[id_record[winner_id]].sendGoal(centroid_record[winner_id])
-			rospy.loginfo("robot_"+str(id_record[winner_id])+"  assigned to  "+str(centroid_record[winner_id]))	
+			rospy.loginfo("\n robot_"+str(id_record[winner_id])+"  assigned to  "+str(centroid_record[winner_id]))	
 			rospy.sleep(0.5)
 #------------------------------------------------------------------------- 
 #Plotting

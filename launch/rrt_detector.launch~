@@ -29,7 +29,7 @@
   <param name="robot_frame" value="/robot_3/base_link"/>
   </node>
  
-  <node pkg="rrt_exploration" type="assigner.py" name="assigner" output="screen">
+  <node pkg="rrt_exploration" type="assigner_testing.py" name="assigner" output="screen">
   <param name="map_topic" value="/map_merge/map"/>
   <param name="info_radius" value="1"/> 
   <param name="info_multiplier" value="3.0"/> 
