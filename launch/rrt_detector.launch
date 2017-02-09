@@ -6,22 +6,22 @@
 <arg name="Geta" value="0.5"/>
 
 
-  <!--node pkg="rrt_exploration" type="rrt_detector" name="rrt_detector" output="screen">
+  <node pkg="rrt_exploration" type="rrt_detector" name="rrt_detector" output="screen">
   <param name="eta" value="$(arg Geta)"/>
   <param name="map_topic" value="/map_merge/map"/>
-  </node-->
+  </node>
   
-  <!--node pkg="rrt_exploration" type="local_rrt_detector" name="robot1_rrt_detector" output="screen">
+  <node pkg="rrt_exploration" type="local_rrt_detector" name="robot1_rrt_detector" output="screen">
   <param name="eta" value="$(arg eta)"/>
   <param name="map_topic" value="/robot_1/map"/>
   <param name="robot_frame" value="/robot_1/base_link"/>
-  </node-->
+  </node>
   
-  <!--node pkg="rrt_exploration" type="local_rrt_detector" name="robot2_rrt_detector" output="screen">
+  <node pkg="rrt_exploration" type="local_rrt_detector" name="robot2_rrt_detector" output="screen">
   <param name="eta" value="$(arg eta)"/>
   <param name="map_topic" value="/robot_2/map"/>
   <param name="robot_frame" value="/robot_2/base_link"/>
-  </node-->
+  </node>
   
   <node pkg="rrt_exploration" type="local_rrt_detector" name="robot3_rrt_detector" output="screen">
   <param name="eta" value="$(arg eta)"/>

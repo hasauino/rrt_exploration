@@ -38,9 +38,10 @@ global1=OccupancyGrid()
 global2=OccupancyGrid()
 global3=OccupancyGrid()
 globalmaps=[]
-def callBack(data):
+def callBack(data,args):
 	global frontiers,min_distance
-	x=[array([data.point.x,data.point.y])]
+	transformedPoint=args[0].transformPoint(args[1],data)
+	x=[array([transformedPoint.point.x,transformedPoint.point.y])]
 	if len(frontiers)>0:
 		frontiers=vstack((frontiers,x))
 	else:
@@ -70,15 +71,14 @@ def node():
 	hysteresis_radius=rospy.get_param('~hysteresis_radius',3.0)			#at least as much as the laser scanner range
 	hysteresis_gain=rospy.get_param('~hysteresis_gain',2.0)				#bigger than 1 (biase robot to continue exploring current region
 	goals_topic= rospy.get_param('~goals_topic','/exploration_goals')	
-	n_robots = rospy.get_param('~n_robots')
+	n_robots = rospy.get_param('~n_robots',1)
 #	global_frame=rospy.get_param('~global_frame','/robot_1/map')
 
 	rate = rospy.Rate(100)
 #-------------------------------------------
 	rospy.Subscriber(map_topic, OccupancyGrid, mapCallBack)
-	rospy.Subscriber(goals_topic, PointStamped, callBack)
-	pub = rospy.Publisher('frontiers', Marker, queue_size=10)
-	pub2 = rospy.Publisher('centroids', Marker, queue_size=10)
+	
+
 #---------------------------------------------------------------------------------------------------------------
 	
 
@@ -88,9 +88,6 @@ def node():
  	for i in range(0,n_robots):
 		rospy.Subscriber('/robot_'+str(i+1)+'/move_base_node/global_costmap/costmap', OccupancyGrid, globalMap) 
 		
-# wait if no frontier is received yet 
-	while len(frontiers)<1:
-		pass	
 #wait if map is not received yet
 	while (len(mapData.data)<1):
 		pass
@@ -102,7 +99,22 @@ def node():
 	global_frame="/"+mapData.header.frame_id
 
 
+	tfLisn=tf.TransformListener()
+	for i in range(0,n_robots):
+		tfLisn.waitForTransform(global_frame[1:], 'robot_'+str(i+1)+'/base_link', rospy.Time(0),rospy.Duration(10.0))
+	
+	rospy.Subscriber(goals_topic, PointStamped, callback=callBack,callback_args=[tfLisn,global_frame[1:]])
+	pub = rospy.Publisher('frontiers', Marker, queue_size=10)
+	pub2 = rospy.Publisher('centroids', Marker, queue_size=10)
+
+
 	rospy.loginfo("the map and global costmaps are received")
+	
+	
+	# wait if no frontier is received yet 
+	while len(frontiers)<1:
+		pass
+	
 	
 	points=Marker()
 	points_clust=Marker()
@@ -137,7 +149,7 @@ def node():
 	pp=[]
 	pl=[]
 	
-	points_clust.header.frame_id= "/robot_1/map"
+	points_clust.header.frame_id= mapData.header.frame_id
 	points_clust.header.stamp= rospy.Time.now()
 
 	points_clust.ns= "markers3"
@@ -164,6 +176,11 @@ def node():
 		robots.append(robot('/robot_'+str(i+1)))
 	for i in range(0,n_robots):
 		robots[i].sendGoal(robots[i].getPosition())
+		
+	temppoint=PointStamped()
+	temppoint.header.frame_id= mapData.header.frame_id
+	temppoint.header.stamp=rospy.Time(0)
+	temppoint.point.z=0.0
 #-------------------------------------------------------------------------
 #---------------------     Main   Loop     -------------------------------
 #-------------------------------------------------------------------------
@@ -180,23 +197,23 @@ def node():
 		#if there is only one frontier no need for clustering, i.e. centroids=frontiers
 		if len(front)==1:
 			centroids=front
-			
 		frontiers=copy(centroids)
-			
-		
-		print "Number of centroids ",len(centroids)	
-		
 #-------------------------------------------------------------------------	
 #clearing old frontiers  
       
 		z=0
 		while z<len(frontiers):
-			threshold=0
+			threshold=20
 			cond=False
+			temppoint.point.x=frontiers[z][0]
+			temppoint.point.y=frontiers[z][1]
+						
 			for i in range(0,n_robots):
-				cond=(gridValue(globalmaps[i],frontiers[z])>threshold) or cond
-				print "length glb cost  ",i,"  ",globalmaps[i].info.origin
-					
+				
+				
+				transformedPoint=tfLisn.transformPoint(globalmaps[i].header.frame_id,temppoint)
+				x=array([transformedPoint.point.x,transformedPoint.point.y])
+				cond=(gridValue(globalmaps[i],x)>threshold) or cond
 			if (cond or (informationGain(mapData,[frontiers[z][0],frontiers[z][1]],info_radius))<1.0):
 				frontiers=delete(frontiers, (z), axis=0)
 				z=z-1
