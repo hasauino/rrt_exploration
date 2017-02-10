@@ -81,7 +81,7 @@ int main(int argc, char **argv)
 ros::Subscriber sub= nh.subscribe(map_topic, 100 ,mapCallBack);	
 ros::Subscriber rviz_sub= nh.subscribe("/clicked_point", 100 ,rvizCallBack);	
 
-ros::Publisher targetspub = nh.advertise<geometry_msgs::PointStamped>("/exploration_goals", 10);
+ros::Publisher targetspub = nh.advertise<geometry_msgs::PointStamped>("/detected_points", 10);
 ros::Publisher pub = nh.advertise<visualization_msgs::Marker>(ns+"_shapes", 10);
 
 ros::Rate rate(100); 

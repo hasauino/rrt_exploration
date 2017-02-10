@@ -12,11 +12,29 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   tf
   visualization_msgs
+  message_generation
+)
+
+
+add_message_files(
+  FILES
+  PointArray.msg
+)
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+  geometry_msgs
+)
+
+
+catkin_package( 
+
+CATKIN_DEPENDS message_runtime
 )
 
 
 
-catkin_package( )
 
 
 include_directories(include ${catkin_INCLUDE_DIRS})
