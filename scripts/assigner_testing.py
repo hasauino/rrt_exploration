@@ -41,6 +41,7 @@ def callBack(data):
 	frontiers=[]
 	for point in data.points:
 		frontiers.append(array([point.x,point.y]))
+	
 
 def mapCallBack(data):
     global mapData
@@ -85,7 +86,7 @@ def node():
 #---------------------     Main   Loop     -------------------------------
 #-------------------------------------------------------------------------
 	while not rospy.is_shutdown():
-		centroids=copy(frontiers)		
+		centroids=copy(frontiers)	
 #-------------------------------------------------------------------------			
 #Get information gain for each frontier point
 		infoGain=[]
