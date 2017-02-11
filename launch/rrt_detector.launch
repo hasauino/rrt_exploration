@@ -3,7 +3,7 @@
 
 <launch>
 <arg name="eta" value="1.0"/>
-<arg name="Geta" value="0.5"/>
+<arg name="Geta" value="1.0"/>
 
 
   <node pkg="rrt_exploration" type="rrt_detector" name="rrt_detector" output="screen">
