@@ -3,7 +3,7 @@
 
 <launch>
 <arg name="eta" value="1.0"/>
-<arg name="Geta" value="0.5"/>
+<arg name="Geta" value="15.0"/>
 
 
   <node pkg="rrt_exploration" type="rrt_detector" name="rrt_detector" output="screen">
@@ -18,6 +18,7 @@
   </node>
   
   <!--node pkg="multi_kobuki_gazebo" type="frontier_opencv_testing.py" name="detector" output="screen"/-->
+  
   <node pkg="rrt_exploration" type="filter.py" name="filter" output="screen">
   <param name="map_topic" value="/robot_1/map"/>
   <param name="info_radius" value="1"/> 
