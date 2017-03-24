@@ -120,7 +120,7 @@ def discount(mapData,assigned_pt,centroids,infoGain,r):
 				for j in range(0,len(centroids)):
 					current_pt=centroids[j]
 					if(mapData.data[i]==-1 and norm(point_of_index(mapData,i)-current_pt)<=r and norm(point_of_index(mapData,i)-assigned_pt)<=r):
-						infoGain[j]-=1
+						infoGain[j]-=1 #this should be modified, subtract the area of a cell, not 1
 	return infoGain
 #________________________________________________________________________________
 
