@@ -127,7 +127,8 @@ The filter nodes receives the detected frontier points from all the detectors, f
  - The map (Topic name is defined by the ```~map_topic``` parameter) ([nav_msgs/OccupancyGrid](http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html)).
 
 - ```robot_x/move_base_node/global_costmap/costmap``` ([nav_msgs/OccupancyGrid](http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html)): where x (in robot_x) refers to robot's number. 
-The filter node subscribes for all the costmap topics of all the robots, the costmap is recuired therefore and normally should be published by the navigation stack (after bringing up the navigation stack on the robots, each robot will have a costmap).
+
+The filter node subscribes for all the costmap topics of all the robots, the costmap is required therefore. Normally the costmaps should be published by the navigation stack (after bringing up the navigation stack on the robots, each robot will have a costmap).
 For example, if  ```~n_robots=2```, the node will subscribe to:
 ```robot_1/move_base_node/global_costmap/costmap``` and ```robot_2/move_base_node/global_costmap/costmap```.
 The costmaps are used to delete invalid points.
