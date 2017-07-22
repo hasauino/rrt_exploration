@@ -97,6 +97,8 @@ All detectors will be publishing detected frontier points on the same topic (```
 This node is another frontier detector, but it is not based on RRT. This node uses OpenCV tools to detect frontier points. It is intended to be run alone, and in multi-robot configuration only one instance should be run (running additional instances of this node does not make any difference).
 
 Originally this node was implemented for comparison against the RRT-based frontier detectors. Running this node along side the RRT detectors (local and global) may enhance the speed of frotiner points detection.
+
+
 Note: You can run any number and any type of detector, all the detectors will be publishing on the same topic which the filter node (will be explained in the following section) is subscribing to. on the other hand, the filer will pass the filtered forntier points to the assigner in order to command the robots to explore these points. 
 
 
