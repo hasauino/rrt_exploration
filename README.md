@@ -65,7 +65,7 @@ The ```global_rrt_frontier_detector``` node takes an occupancy grid and finds fr
 #### 3.1.3. Published Topics
  - ```/detected_points``` ([geometry_msgs/PointStamped Message](http://docs.ros.org/api/geometry_msgs/html/msg/PointStamped.html)): The topic on which the node publishes detected frontier points.
 
-- ```~shapes``` ([visualization_msgs/Marker Message](http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html)): The node aslo publishes the points on this topic so they can be visualized using Rviz.
+- ```~shapes``` ([visualization_msgs/Marker Message](http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html)): On this topic, the node publishes line shapes to visualize the RRT using Rviz.
 
 
 
