@@ -4,29 +4,16 @@
 from copy import copy
 import rospy
 from visualization_msgs.msg import Marker
-from std_msgs.msg import String
 from geometry_msgs.msg import Point
 from nav_msgs.msg import OccupancyGrid
-import actionlib_msgs.msg
-from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
-from geometry_msgs.msg import PointStamped 
-from geometry_msgs.msg import PoseStamped
-from nav_msgs.srv import GetPlan
-import actionlib
 import tf
 from rrt_exploration.msg import PointArray
-
 from time import time
-from os import system
-from random import random
-from numpy import array,concatenate,vstack,delete,floor,ceil
+from numpy import array
 from numpy import linalg as LA
 from numpy import all as All
 from numpy import inf
-from functions import gridValue,robot,informationGain,discount,pathCost,unvalid
-from sklearn.cluster import KMeans
-from sklearn.cluster import MeanShift
-import numpy as np
+from functions import robot,informationGain,discount
 from numpy.linalg import norm
 
 # Subscribers' callbacks------------------------------

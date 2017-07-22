@@ -6,12 +6,13 @@
 <arg name="Geta" value="15.0"/>
 
 
-  <node pkg="rrt_exploration" type="rrt_detector" name="rrt_detector" output="screen">
+
+  <node pkg="rrt_exploration" type="global_rrt_detector" name="global_detector" output="screen">
   <param name="eta" value="$(arg Geta)"/>
   <param name="map_topic" value="/robot_1/map"/>
   </node>
   
-  <node pkg="rrt_exploration" type="local_rrt_detector" name="robot1_rrt_detector" output="screen">
+  <node pkg="rrt_exploration" type="local_rrt_detector" name="local_detector" output="screen">
   <param name="eta" value="$(arg eta)"/>
   <param name="map_topic" value="/robot_1/map"/>
   <param name="robot_frame" value="/robot_1/base_link"/>
@@ -39,4 +40,5 @@
   <param name="delay_after_assignement" value="0.5"/>
   <param name="rate" value="100"/>
   </node>
+  
 </launch>

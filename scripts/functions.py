@@ -8,7 +8,6 @@ from geometry_msgs.msg import PoseStamped
 from numpy import floor
 from numpy.linalg import norm
 from numpy import inf
-from copy import copy
 #________________________________________________________________________________
 class robot:
 	goal = MoveBaseGoal()

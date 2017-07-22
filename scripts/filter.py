@@ -8,11 +8,9 @@ from geometry_msgs.msg import Point
 from nav_msgs.msg import OccupancyGrid
 from geometry_msgs.msg import PointStamped 
 import tf
-from numpy import array,vstack,delete,floor,ceil
+from numpy import array,vstack,delete
 from functions import gridValue,informationGain
-from sklearn.cluster import KMeans
 from sklearn.cluster import MeanShift
-from numpy.linalg import norm
 from rrt_exploration.msg import PointArray
 
 # Subscribers' callbacks------------------------------
