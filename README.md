@@ -136,7 +136,10 @@ Note: Namespaces of all the nodes corresponding to a robot should start with ```
  - The goals topic (Topic name is defined by the ```~goals_topic``` parameter)([geometry_msgs/PointStamped Message](http://docs.ros.org/api/geometry_msgs/html/msg/PointStamped.html)): The topic on which the filter node receives detected frontier points.
  
 #### 3.2.3. Published Topics
- - ```detected_points``` ([geometry_msgs/PointStamped Message](http://docs.ros.org/api/geometry_msgs/html/msg/PointStamped.html)): The topic on which the node publishes detected frontier points.
+ - ```frontiers``` ([visualization_msgs/Marker Message](http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html)): The topic on which the filter node publishes the received frontier points for visualiztion on Rviz.
+ 
+ - ```centroids``` ([visualization_msgs/Marker Message](http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html)): The topic on which the filter node publishes only the filtered frontier points for visualiztion on Rviz.
 
-- ```~shapes``` ([visualization_msgs/Marker Message](http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html)): On this topic, the node publishes line shapes to visualize the RRT using Rviz.
+ - ```filtered_points``` ([PointArray](https://github.com/hasauino/rrt_exploration/blob/master/msg/PointArray.msg)): All the filtered points are sent as an array of points to the assigner node on this topic.
+
 
