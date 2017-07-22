@@ -11,7 +11,9 @@ It is a ROS package that implements a multi-robot exploration algorithm. It is b
 The package has been tested on both ROS Kinetic and ROS Indigo, it should work on other distributions like Jade. 
 ## Requirements
 1- You should have installed a ROS distribution (indigo or later. Recommended is either indigo or kinetic).
+
 2- Created a workspace.
+
 3- Installed the "gmapping" ROS package: on Ubuntu, and if you are running ROS Kinectic, you can do that by typing the following command in the terminal:
 ```sh
 $ sudo apt-get install ros-kinetic-gmapping
