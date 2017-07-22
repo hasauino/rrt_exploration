@@ -68,4 +68,7 @@ The ```global_rrt_frontier_detector``` node takes an occupancy grid and finds fr
 - ```~shapes``` ([visualization_msgs/Marker Message](http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html)): On this topic, the node publishes line shapes to visualize the RRT using Rviz.
 
 
+### 3.2. local_rrt_frontier_detector
+This node is similar to the global_rrt_frontier_detector. It works differently, as the tree in RRT keeps resetting every time a frontier point is detected. This node is intended to be run along side the global_rrt_frontier_detector node, it is responible for fast detection of frontier points that lie in the vicinity of the robot.
 
+In multi-robot configuration, each robot runs an instance of the local_rrt_frontier_detector. So for a team of 3 robots, there will be 4 nodes for detecting frontier points; 3 local detectors and 1 global detector.
