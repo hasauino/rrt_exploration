@@ -114,3 +114,29 @@ Note: You can run any type and any number of detectors, all the detectors will b
 
 ### 3.4. filter
 The filter nodes receives the detected frontier points from all the detectors, filters the points, and passes them to the assigner node to command the robots. Filtration includes the delection of old and invalid points, and it also dicards redundant points.
+
+#### 3.4.1. Parameters
+ - ```~map_topic``` (string, default: "/robot_1/map"): This parameter defines the topic name on which the node will recieve the map. The map is used to know which points are no longer frontier points (old points).
+  - ```~costmap_clearing_threshold``` (float, default: 70.0): Any frontier point that has an occupancy value greater than this threshold will be considered invalid. The occupancy value is obtained from the costmap. 
+  - ```~info_radius```(float, default: 1.0): The information radius used in calculating the information gain of frontier points.
+  - ```~goals_topic``` (string, default: "/detected_points"): defines the topic on which the node receives detcted frontier points.
+  - ```~n_robots```(float, default: 1.0): Number of robots.
+  - ```~rate```(float, default: 1.0): node loop rate (in Hz).
+
+#### 3.4.2. Subscribed Topics
+ - The map (Topic name is defined by the ```~map_topic``` parameter) ([nav_msgs/OccupancyGrid](http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html)).
+
+- ```robot_x/move_base_node/global_costmap/costmap``` ([nav_msgs/OccupancyGrid](http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html)): where x (in robot_x) refers to robot's number. 
+The filter node subscribes for all the costmap topics of all the robots, the costmap is recuired therefore and normally should be published by the navigation stack (after bringing up the navigation stack on the robots, each robot will have a costmap).
+For example, if  ```~n_robots=2```, the node will subscribe to:
+```robot_1/move_base_node/global_costmap/costmap``` and ```robot_2/move_base_node/global_costmap/costmap```.
+The costmaps are used to delete invalid points.
+Note: Namespaces of all the nodes corresponding to a robot should start with ```robot_x```. Again ```x``` is the robot number. 
+
+ - The goals topic (Topic name is defined by the ```~goals_topic``` parameter)([geometry_msgs/PointStamped Message](http://docs.ros.org/api/geometry_msgs/html/msg/PointStamped.html)): The topic on which the filter node receives detected frontier points.
+ 
+#### 3.2.3. Published Topics
+ - ```detected_points``` ([geometry_msgs/PointStamped Message](http://docs.ros.org/api/geometry_msgs/html/msg/PointStamped.html)): The topic on which the node publishes detected frontier points.
+
+- ```~shapes``` ([visualization_msgs/Marker Message](http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html)): On this topic, the node publishes line shapes to visualize the RRT using Rviz.
+
