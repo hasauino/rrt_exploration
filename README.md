@@ -132,6 +132,7 @@ The filter node subscribes for all the costmap topics of all the robots, the cos
 For example, if  ```n_robots=2```, the node will subscribe to:
 ```robot_1/move_base_node/global_costmap/costmap``` and ```robot_2/move_base_node/global_costmap/costmap```.
 The costmaps are used to delete invalid points.
+
 Note: Namespaces of all the nodes corresponding to a robot should start with ```robot_x```. Again ```x``` is the robot number. 
 
  - The goals topic (Topic name is defined by the ```~goals_topic``` parameter)([geometry_msgs/PointStamped Message](http://docs.ros.org/api/geometry_msgs/html/msg/PointStamped.html)): The topic on which the filter node receives detected frontier points.
