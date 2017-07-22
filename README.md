@@ -1,2 +1,2 @@
 # rrt_exploration
-A ROS package that implements a multi-robot RRT-based map exploration algorithm. It also has the image-based frontier detection that uses image processing to extract frontier points.
+It is a ROS package that implements a multi-robot exploration algorithm. It is based on the Rapidaly-Exploring Random Tree (RRT) algorithm. The packgae has 3 types of nodes:
