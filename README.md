@@ -144,4 +144,4 @@ Note: Namespaces of all the nodes corresponding to a robot should start with ```
 
  - ```filtered_points``` ([PointArray](https://github.com/hasauino/rrt_exploration/blob/master/msg/PointArray.msg)): All the filtered points are sent as an array of points to the assigner node on this topic.
 
-
+### 3.4. Assigner
