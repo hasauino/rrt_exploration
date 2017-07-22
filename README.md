@@ -53,6 +53,7 @@ There are 3 types of nodes; nodes for detecting frontier points in an occupancy 
 ### 3.1. global_rrt_frontier_detector
 The ```global_rrt_frontier_detector``` node takes an occupancy grid and finds frontier points (which are exploration targets) in it. It publishes the detected points so the filter node can process. In multi-robot configuration, it is intended to have only a single instance of this node running. 
 
+Running additional instances of the global frontier detector can enhance the speed of frontier points detection, if needed.
 #### 3.1.1. Parameters
  - ```~map_topic``` (string, default: "/robot_1/map"): This parameter defines the topic name on which the node will recieve the map.
   - ```~eta``` (float, default: 0.5): This parameter controls the growth rate of the RRT that is used in the detection of frontier points, the unit is in meters. This parameter should be set according to the map size, a very large value will cause the tree to grow faster and  hence detect frontier points faster, but a large growth rate also implies that the tree will be missing small corners in the map.
@@ -72,7 +73,7 @@ The ```global_rrt_frontier_detector``` node takes an occupancy grid and finds fr
 This node is similar to the global_rrt_frontier_detector. However, it works differently, as the tree here keeps resetting every time a frontier point is detected. This node is intended to be run along side the global_rrt_frontier_detector node, it is responsible for fast detection of frontier points that lie in the close vicinity of the robot.
 
 In multi-robot configuration, each robot runs an instance of the local_rrt_frontier_detector. So for a team of 3 robots, there will be 4 nodes for detecting frontier points; 3 local detectors and 1 global detector.
-
+Running additional instances of the local frontier detector can enhance the speed of frontier points detection, if needed.
 All detectors will be publishing detected frontier points on the same topic (```/detected_points```).
 #### 3.2.1. Parameters
 - ```~robot_frame``` (string, default: "/robot_1/base_link"): The frame attached to the robot. Every time the tree resets, it will start from the current robot location obtained from this frame.
@@ -88,3 +89,13 @@ All detectors will be publishing detected frontier points on the same topic (```
  - ```detected_points``` ([geometry_msgs/PointStamped Message](http://docs.ros.org/api/geometry_msgs/html/msg/PointStamped.html)): The topic on which the node publishes detected frontier points.
 
 - ```~shapes``` ([visualization_msgs/Marker Message](http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html)): On this topic, the node publishes line shapes to visualize the RRT using Rviz.
+
+
+### 3.2. frontier_opencv_detector
+This node is another frontier detector, but it is not based on RRT. This node uses OpenCV tools to detect frontier points. It is intended to be run alone, and in multi-robot configuration only one instance should be run (running additional instances of this node does not make any difference).
+
+Originally this node was implemented for comparison against the RRT-based frontier detectors. Running this node along side the RRT detectors (local and global) may enhance the speed of frotiner points detection.
+Note: You can run any number and any type of detector, all the detectors will be publishing on the same topic which the filter node (will be explained in the following section) is subscribing to. on the other hand, the filer will pass the filtered forntier points to the assigner in order to command the robots to explore these points. 
+
+
+
