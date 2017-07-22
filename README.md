@@ -74,6 +74,8 @@ This node is similar to the global_rrt_frontier_detector. However, it works diff
 
 In multi-robot configuration, each robot runs an instance of the local_rrt_frontier_detector. So for a team of 3 robots, there will be 4 nodes for detecting frontier points; 3 local detectors and 1 global detector.
 Running additional instances of the local frontier detector can enhance the speed of frontier points detection, if needed.
+
+
 All detectors will be publishing detected frontier points on the same topic (```/detected_points```).
 #### 3.2.1. Parameters
 - ```~robot_frame``` (string, default: "/robot_1/base_link"): The frame attached to the robot. Every time the tree resets, it will start from the current robot location obtained from this frame.
