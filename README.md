@@ -25,6 +25,7 @@ $ sudo apt-get install ros-kinetic-navigation
 5- You should have Python 2.7. (it was not tested on Python 3).
 
 6-You should have/install the following python modules:
+
 -OpenCV (cv2)
 ```sh
 $ sudo apt-get install python-opencv
