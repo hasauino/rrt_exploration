@@ -99,7 +99,7 @@ This node is another frontier detector, but it is not based on RRT. This node us
 Originally this node was implemented for comparison against the RRT-based frontier detectors. Running this node along side the RRT detectors (local and global) may enhance the speed of frotiner points detection.
 
 
-Note: You can run any number and any type of detector, all the detectors will be publishing on the same topic which the filter node (will be explained in the following section) is subscribing to. on the other hand, the filer will pass the filtered forntier points to the assigner in order to command the robots to explore these points. 
+Note: You can run any type and any number of detectors, all the detectors will be publishing on the same topic which the filter node (will be explained in the following section) is subscribing to. on the other hand, the filer will pass the filtered forntier points to the assigner in order to command the robots to explore these points. 
 
 
 
