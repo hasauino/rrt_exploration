@@ -112,4 +112,5 @@ Note: You can run any type and any number of detectors, all the detectors will b
 
 - ```shapes``` ([visualization_msgs/Marker Message](http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html)): On this topic, the node publishes detected points to be visualized using Rviz.
 
-
+### 3.4. filter
+The filter nodes receives the detected frontier points from all the detectors, filters the points, and passes them to the assigner node to command the robots. Filtration include the delection of old and invalid points, and it also dicards redundant points.
