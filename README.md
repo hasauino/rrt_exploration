@@ -51,7 +51,7 @@ There are 3 types of nodes; nodes for detecting frontier points in an occupancy 
 ![alt text](https://github.com/hasauino/storage/blob/master/pictures/fullSchematic.png "overview of the exploration strategy")
 
 ### 3.1. global_rrt_frontier_detector
-
+The ```global_rrt_frontier_detector``` node takes an occupancy grid and finds frontier points (which are exploration targets) in it. It publishes the detected points so the filter node can process. In multi-robot configuration, it is intended to have only a single instance of this node running. 
 
 
 
