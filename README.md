@@ -47,7 +47,9 @@ $ sudo apt-get install python-scikits-learn
 Download the package and place it inside the ```/src``` folder in your workspace. And then compile using ```catkin_make```.
 ## 3. Setting Up Your Robots
 This package provides an exploration strategy for single or multiple robots. However, for it to work, you should have set your robots ready using the [navigation stack](http://wiki.ros.org/navigation). Additionally, the robots must be set and prepared as follows:
-### 3.1. Robot's frame names in ```tf```
+### 3.1. Robots Network
+For the multi-robot configuration, the package doesn't require special network configuration, it simply works by having a single ROS master (can be one of the robots). So on the other robots, the ```ROS_MASTER_URI``` parameter should be pointing to the master's address. 
+### 3.2. Robot's frame names in ```tf```
 All robot's frames should be prefixed by its name. Namimg of robots starts from "/robot_1", "/robot_2", "/robot_3", .. and so on. Even if you are using the package for single robot, robot's frames should be prefixed by it name (i.e. /robot_1).
 ## 4. Nodes
 There are 3 types of nodes; nodes for detecting frontier points in an occupancy grid map, a node for filtering the detected points, and a node for assigning the points to the robots. The following figure shows the structure:
