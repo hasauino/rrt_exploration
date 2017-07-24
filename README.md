@@ -53,6 +53,7 @@ This package provides an exploration strategy for single or multiple robots. How
 For the multi-robot configuration, the package doesn't require special network configuration, it simply works by having a single ROS master (can be one of the robots). So on the other robots, the ```ROS_MASTER_URI``` parameter should be pointing at the master's address. 
 For more information on setting up ROS on multiple machines, follow [this](http://wiki.ros.org/ROS/NetworkSetup) link.
 
+Note: If you want to quickly run and test the package, you can try out the [rrt_exploration_tutorials](https://github.com/hasauino/rrt_exploration_tutorials) package which Gazebo simulation for single and multiple robots.
 ### 3.2. Robot's frame names in ```tf```
 All robot's frames should be prefixed by its name. Naming of robots starts from "/robot_1", "/robot_2", "/robot_3", .. and so on. Even if you are using the package for single robot, robot's frames should be prefixed by its name (i.e. /robot_1). So for robot_1, the frames in the ```tf``` tree should look like this:
 
