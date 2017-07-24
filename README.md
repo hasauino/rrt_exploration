@@ -45,31 +45,32 @@ $ sudo apt-get install python-scikits-learn
 ```
 ## 2-Installation
 Download the package and place it inside the ```/src``` folder in your workspace. And then compile using ```catkin_make```.
+## 3- Setting Up Your Robots
 
-## 3-Nodes
+## 4-Nodes
 There are 3 types of nodes; nodes for detecting frontier points in an occupancy grid map, a node for filtering the detected points, and a node for assigning the points to the robots. The following figure shows the structure:
 ![alt text](https://github.com/hasauino/storage/blob/master/pictures/fullSchematic.png "overview of the exploration strategy")
 
-### 3.1. global_rrt_frontier_detector
+### 4.1. global_rrt_frontier_detector
 The ```global_rrt_frontier_detector``` node takes an occupancy grid and finds frontier points (which are exploration targets) in it. It publishes the detected points so the filter node can process. In multi-robot configuration, it is intended to have only a single instance of this node running. 
 
 Running additional instances of the global frontier detector can enhance the speed of frontier points detection, if needed.
-#### 3.1.1. Parameters
+#### 4.1.1. Parameters
  - ```~map_topic``` (string, default: "/robot_1/map"): This parameter defines the topic name on which the node will recieve the map.
   - ```~eta``` (float, default: 0.5): This parameter controls the growth rate of the RRT that is used in the detection of frontier points, the unit is in meters. This parameter should be set according to the map size, a very large value will cause the tree to grow faster and  hence detect frontier points faster, but a large growth rate also implies that the tree will be missing small corners in the map.
 
-#### 3.1.2. Subscribed Topics
+#### 4.1.2. Subscribed Topics
  - The map (Topic name is defined by the ```~map_topic``` parameter) ([nav_msgs/OccupancyGrid](http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html))
 
 - ```clicked_point``` ([geometry_msgs/PointStamped Message](http://docs.ros.org/api/geometry_msgs/html/msg/PointStamped.html)): The ```global_rrt_frontier_detector``` node requires that the region to be explored is defined. This topic is where the node recieves five points that define the region. The first four points are four defining a square region to be explored, and the last point is the tree starting point. After publishing those five points on this topic, the RRT will start detecting frontier points. The five points are intended to be published from Rviz using ![alt text](https://github.com/hasauino/storage/blob/master/pictures/publishPointRviz_button.png "Rviz publish point button") button.
 
-#### 3.1.3. Published Topics
+#### 4.1.3. Published Topics
  - ```detected_points``` ([geometry_msgs/PointStamped Message](http://docs.ros.org/api/geometry_msgs/html/msg/PointStamped.html)): The topic on which the node publishes detected frontier points.
 
 - ```~shapes``` ([visualization_msgs/Marker Message](http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html)): On this topic, the node publishes line shapes to visualize the RRT using Rviz.
 
 
-### 3.2. local_rrt_frontier_detector
+### 4.2. local_rrt_frontier_detector
 This node is similar to the global_rrt_frontier_detector. However, it works differently, as the tree here keeps resetting every time a frontier point is detected. This node is intended to be run along side the global_rrt_frontier_detector node, it is responsible for fast detection of frontier points that lie in the close vicinity of the robot.
 
 In multi-robot configuration, each robot runs an instance of the local_rrt_frontier_detector. So for a team of 3 robots, there will be 4 nodes for detecting frontier points; 3 local detectors and 1 global detector.
@@ -77,23 +78,23 @@ Running additional instances of the local frontier detector can enhance the spee
 
 
 All detectors will be publishing detected frontier points on the same topic (```/detected_points```).
-#### 3.2.1. Parameters
+#### 4.2.1. Parameters
 - ```~robot_frame``` (string, default: "/robot_1/base_link"): The frame attached to the robot. Every time the tree resets, it will start from the current robot location obtained from this frame.
 
  - ```~map_topic``` (string, default: "/robot_1/map"): This parameter defines the topic name on which the node will recieve the map.
   - ```~eta``` (float, default: 0.5): This parameter controls the growth rate of the local RRT.
 
-#### 3.2.2. Subscribed Topics
+#### 4.2.2. Subscribed Topics
  - The map (Topic name is defined by the ```~map_topic``` parameter) ([nav_msgs/OccupancyGrid](http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html)).
 
 - ```clicked_point``` ([geometry_msgs/PointStamped Message](http://docs.ros.org/api/geometry_msgs/html/msg/PointStamped.html)): The ```lobal_rrt_frontier_detector``` also subscribes to this topic similar to the global_rrt_frontier_detector. 
-#### 3.2.3. Published Topics
+#### 4.2.3. Published Topics
  - ```detected_points``` ([geometry_msgs/PointStamped Message](http://docs.ros.org/api/geometry_msgs/html/msg/PointStamped.html)): The topic on which the node publishes detected frontier points.
 
 - ```~shapes``` ([visualization_msgs/Marker Message](http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html)): On this topic, the node publishes line shapes to visualize the RRT using Rviz.
 
 
-### 3.3. frontier_opencv_detector
+### 4.3. frontier_opencv_detector
 This node is another frontier detector, but it is not based on RRT. This node uses OpenCV tools to detect frontier points. It is intended to be run alone, and in multi-robot configuration only one instance should be run (running additional instances of this node does not make any difference).
 
 Originally this node was implemented for comparison against the RRT-based frontier detectors. Running this node along side the RRT detectors (local and global) may enhance the speed of frotiner points detection.
@@ -101,21 +102,21 @@ Originally this node was implemented for comparison against the RRT-based fronti
 
 Note: You can run any type and any number of detectors, all the detectors will be publishing on the same topic which the filter node (will be explained in the following section) is subscribing to. on the other hand, the filter will pass the filtered forntier points to the assigner in order to command the robots to explore these points. 
 
-#### 3.3.1. Parameters
+#### 4.3.1. Parameters
  - ```~map_topic``` (string, default: "/robot_1/map"): This parameter defines the topic name on which the node will recieve the map.
 
-#### 3.3.2. Subscribed Topics
+#### 4.3.2. Subscribed Topics
  - The map (Topic name is defined by the ```~map_topic``` parameter) ([nav_msgs/OccupancyGrid](http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html))
 
-#### 3.3.3. Published Topics
+#### 4.3.3. Published Topics
  - ```detected_points``` ([geometry_msgs/PointStamped Message](http://docs.ros.org/api/geometry_msgs/html/msg/PointStamped.html)): The topic on which the node publishes detected frontier points.
 
 - ```shapes``` ([visualization_msgs/Marker Message](http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html)): On this topic, the node publishes detected points to be visualized using Rviz.
 
-### 3.4. filter
+### 4.4. filter
 The filter nodes receives the detected frontier points from all the detectors, filters the points, and passes them to the assigner node to command the robots. Filtration includes the delection of old and invalid points, and it also dicards redundant points.
 
-#### 3.4.1. Parameters
+#### 4.4.1. Parameters
  - ```~map_topic``` (string, default: "/robot_1/map"): This parameter defines the topic name on which the node will recieve the map. The map is used to know which points are no longer frontier points (old points).
   - ```~costmap_clearing_threshold``` (float, default: 70.0): Any frontier point that has an occupancy value greater than this threshold will be considered invalid. The occupancy value is obtained from the costmap. 
   - ```~info_radius```(float, default: 1.0): The information radius used in calculating the information gain of frontier points.
@@ -123,7 +124,7 @@ The filter nodes receives the detected frontier points from all the detectors, f
   - ```~n_robots```(float, default: 1.0): Number of robots.
   - ```~rate```(float, default: 1.0): node loop rate (in Hz).
 
-#### 3.4.2. Subscribed Topics
+#### 4.4.2. Subscribed Topics
  - The map (Topic name is defined by the ```~map_topic``` parameter) ([nav_msgs/OccupancyGrid](http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html)).
 
 - ```robot_x/move_base_node/global_costmap/costmap``` ([nav_msgs/OccupancyGrid](http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html)): where x (in robot_x) refers to robot's number. 
@@ -137,11 +138,11 @@ Note: Namespaces of all the nodes corresponding to a robot should start with ```
 
  - The goals topic (Topic name is defined by the ```~goals_topic``` parameter)([geometry_msgs/PointStamped Message](http://docs.ros.org/api/geometry_msgs/html/msg/PointStamped.html)): The topic on which the filter node receives detected frontier points.
  
-#### 3.2.3. Published Topics
+#### 4.2.3. Published Topics
  - ```frontiers``` ([visualization_msgs/Marker Message](http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html)): The topic on which the filter node publishes the received frontier points for visualiztion on Rviz.
  
  - ```centroids``` ([visualization_msgs/Marker Message](http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html)): The topic on which the filter node publishes only the filtered frontier points for visualiztion on Rviz.
 
  - ```filtered_points``` ([PointArray](https://github.com/hasauino/rrt_exploration/blob/master/msg/PointArray.msg)): All the filtered points are sent as an array of points to the assigner node on this topic.
 
-### 3.4. Assigner
+### 4.4. Assigner
