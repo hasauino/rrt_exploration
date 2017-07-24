@@ -11,6 +11,8 @@ It is a ROS package that implements a multi-robot exploration algorithm. It is b
   
   - opencv-based frontier detector node.
 
+Note: This package was written during my master's thesis at the American University of Sharjah. My thesis advisor was Dr.[Shayok Mukhopadhyay](https://sites.google.com/site/shayok/Home).
+
 ## 1. Requirements
 The package has been tested on both ROS Kinetic and ROS Indigo, it should work on other distributions like Jade. The following requirements are needed before installing the package:
 
