@@ -11,7 +11,7 @@ It is a ROS package that implements a multi-robot exploration algorithm. It is b
   
   - opencv-based frontier detector node.
 
-## 1-Requirements
+## 1. Requirements
 The package has been tested on both ROS Kinetic and ROS Indigo, it should work on other distributions like Jade. The following requirements are needed before installing the package:
 
 1- You should have installed a ROS distribution (indigo or later. Recommended is either indigo or kinetic).
@@ -43,12 +43,12 @@ $ sudo apt-get install python-numpy
 ```sh
 $ sudo apt-get install python-scikits-learn
 ```
-## 2-Installation
+## 2. Installation
 Download the package and place it inside the ```/src``` folder in your workspace. And then compile using ```catkin_make```.
-## 3- Setting Up Your Robots
+## 3. Setting Up Your Robots
 This package provides an exploration strategy for single or multiple robots. However, for it to work, the robots must be set and prepared as follows:
-
-## 4-Nodes
+### 3
+## 4. Nodes
 There are 3 types of nodes; nodes for detecting frontier points in an occupancy grid map, a node for filtering the detected points, and a node for assigning the points to the robots. The following figure shows the structure:
 ![alt text](https://github.com/hasauino/storage/blob/master/pictures/fullSchematic.png "overview of the exploration strategy")
 
