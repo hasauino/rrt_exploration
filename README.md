@@ -46,8 +46,9 @@ $ sudo apt-get install python-scikits-learn
 ## 2. Installation
 Download the package and place it inside the ```/src``` folder in your workspace. And then compile using ```catkin_make```.
 ## 3. Setting Up Your Robots
-This package provides an exploration strategy for single or multiple robots. However, for it to work, the robots must be set and prepared as follows:
-### 3
+This package provides an exploration strategy for single or multiple robots. However, for it to work, you should have set your robots ready using the [navigation stack](http://wiki.ros.org/navigation). Additionally, the robots must be set and prepared as follows:
+### 3.1. Robot's frame names in tf
+
 ## 4. Nodes
 There are 3 types of nodes; nodes for detecting frontier points in an occupancy grid map, a node for filtering the detected points, and a node for assigning the points to the robots. The following figure shows the structure:
 ![alt text](https://github.com/hasauino/storage/blob/master/pictures/fullSchematic.png "overview of the exploration strategy")
