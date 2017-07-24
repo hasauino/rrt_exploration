@@ -52,7 +52,7 @@ For the multi-robot configuration, the package doesn't require special network c
 For more information on setting up ROS on multiple machines, follow [this](http://wiki.ros.org/ROS/NetworkSetup) link.
 
 ### 3.2. Robot's frame names in ```tf```
-All robot's frames should be prefixed by its name. Naming of robots starts from "/robot_1", "/robot_2", "/robot_3", .. and so on. Even if you are using the package for single robot, robot's frames should be prefixed by it name (i.e. /robot_1).
+All robot's frames should be prefixed by its name. Naming of robots starts from "/robot_1", "/robot_2", "/robot_3", .. and so on. Even if you are using the package for single robot, robot's frames should be prefixed by its name (i.e. /robot_1).
 ## 4. Nodes
 There are 3 types of nodes; nodes for detecting frontier points in an occupancy grid map, a node for filtering the detected points, and a node for assigning the points to the robots. The following figure shows the structure:
 ![alt text](https://github.com/hasauino/storage/blob/master/pictures/fullSchematic.png "overview of the exploration strategy")
