@@ -50,7 +50,7 @@ Download the package and place it inside the ```/src``` folder in your workspace
 ## 3. Setting Up Your Robots
 This package provides an exploration strategy for single or multiple robots. However, for it to work, you should have set your robots ready using the [navigation stack](http://wiki.ros.org/navigation). Additionally, the robots must be set and prepared as follows.
 
-Note: If you want to quickly run and test the package, you can try out the [rrt_exploration_tutorials](https://github.com/hasauino/rrt_exploration_tutorials) package which provides Gazebo simulation for single and multiple robots, which you can use to directly with this package.
+Note: If you want to quickly run and test the package, you can try out the [rrt_exploration_tutorials](https://github.com/hasauino/rrt_exploration_tutorials) package which provides Gazebo simulation for single and multiple robots, you can use it to directly with this package.
 
 ### 3.1. Robots Network
 For the multi-robot configuration, the package doesn't require special network configuration, it simply works by having a single ROS master (can be one of the robots). So on the other robots, the ```ROS_MASTER_URI``` parameter should be pointing at the master's address. 
