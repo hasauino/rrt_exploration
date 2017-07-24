@@ -12,6 +12,8 @@ It is a ROS package that implements a multi-robot exploration algorithm. It is b
   - opencv-based frontier detector node.
 
 This is a [Youtube playlist](https://www.youtube.com/playlist?list=PLoGH52eUIHsc1B_xPLL6ogzYxrWy675kr) showing the package running on single/multiple robots, using real setup (Kobuki robots) and simulation (Gazebo).
+
+
 Note: This package was written during my master's thesis at the American University of Sharjah. My thesis advisor is Dr. [Shayok Mukhopadhyay](https://sites.google.com/site/shayok/Home).
 
 ## 1. Requirements
