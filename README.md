@@ -49,7 +49,7 @@ Download the package and place it inside the ```/src``` folder in your workspace
 This package provides an exploration strategy for single or multiple robots. However, for it to work, you should have set your robots ready using the [navigation stack](http://wiki.ros.org/navigation). Additionally, the robots must be set and prepared as follows:
 ### 3.1. Robots Network
 For the multi-robot configuration, the package doesn't require special network configuration, it simply works by having a single ROS master (can be one of the robots). So on the other robots, the ```ROS_MASTER_URI``` parameter should be pointing at the master's address. 
-For more information on setting up ROS on multiple machines, follow [this](http://wiki.ros.org/ROS/Tutorials/MultipleMachines) tutorial.
+For more information on setting up ROS on multiple machines, follow [this](http://wiki.ros.org/ROS/NetworkSetup) tutorial.
 
 ### 3.2. Robot's frame names in ```tf```
 All robot's frames should be prefixed by its name. Namimg of robots starts from "/robot_1", "/robot_2", "/robot_3", .. and so on. Even if you are using the package for single robot, robot's frames should be prefixed by it name (i.e. /robot_1).
