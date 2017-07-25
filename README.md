@@ -188,5 +188,5 @@ This node recieve target exploration goals, which are the filtered frontier poin
 
 -  ```~delay_after_assignement```(float, default: 0.5): The unit is seconds. It defines the amount of delay after each robot assignment.
 
-- ```~rate```(float, default: 1.0): node loop rate (in Hz).
+- ```~rate```(float, default: 100): node loop rate (in Hz).
 
