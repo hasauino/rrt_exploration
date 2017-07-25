@@ -192,4 +192,15 @@ This node recieve target exploration goals, which are the filtered frontier poin
 - ```~rate```(float, default: 100): node loop rate (in Hz).
 
 #### 4.5.2. Subscribed Topics
+ - The map (Topic name is defined by the ```~map_topic``` parameter) ([nav_msgs/OccupancyGrid](http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html)).
+ 
+- Filtered frontier points topic (Topic name is defined by the ```~frontiers_topic``` parameter)  ([PointArray](https://github.com/hasauino/rrt_exploration/blob/master/msg/PointArray.msg)).
+
+
+
+
+
+
+
+
 
