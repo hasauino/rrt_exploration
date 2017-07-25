@@ -170,3 +170,7 @@ Note: Namespaces of all the nodes corresponding to a robot should start with ```
  - ```filtered_points``` ([PointArray](https://github.com/hasauino/rrt_exploration/blob/master/msg/PointArray.msg)): All the filtered points are sent as an array of points to the assigner node on this topic.
 
 ### 4.5. Assigner
+This node recieve target exploration goals, which are the filtered frontier points published by the filter node, and commands the robots accordingly. The assigner node commands the robots through the ```move_base_node```. This is why you have bring up the navigation stack on your robots.
+
+#### 4.5.1. Parameters
+- ```~map_topic``` (string, default: "/robot_1/map"): This parameter defines the topic name on which the node will recieve the map. In the single robot case, this topic should be set to the map topic of the robot. In the multi-robot case, this topic must be set to global merged map.
