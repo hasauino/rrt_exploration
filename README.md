@@ -196,7 +196,8 @@ This node recieve target exploration goals, which are the filtered frontier poin
  
 - Filtered frontier points topic (Topic name is defined by the ```~frontiers_topic``` parameter)  ([PointArray](https://github.com/hasauino/rrt_exploration/blob/master/msg/PointArray.msg)).
 
-
+#### 4.5.3. Published Topics
+The assigner node does not publish anything. It sends the assinged point to the ```move_base_node``` using Actionlib (the assigner node is an actionlib client to the move_base_node actionlib server).
 
 
 
