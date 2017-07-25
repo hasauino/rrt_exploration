@@ -163,6 +163,7 @@ Note: Namespaces of all the nodes corresponding to a robot should start with ```
  - The goals topic (Topic name is defined by the ```~goals_topic``` parameter)([geometry_msgs/PointStamped Message](http://docs.ros.org/api/geometry_msgs/html/msg/PointStamped.html)): The topic on which the filter node receives detected frontier points.
  
 #### 4.4.3. Published Topics
+
  - ```frontiers``` ([visualization_msgs/Marker Message](http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html)): The topic on which the filter node publishes the received frontier points for visualiztion on Rviz.
  
  - ```centroids``` ([visualization_msgs/Marker Message](http://docs.ros.org/api/visualization_msgs/html/msg/Marker.html)): The topic on which the filter node publishes only the filtered frontier points for visualiztion on Rviz.
@@ -189,4 +190,6 @@ This node recieve target exploration goals, which are the filtered frontier poin
 -  ```~delay_after_assignement```(float, default: 0.5): The unit is seconds. It defines the amount of delay after each robot assignment.
 
 - ```~rate```(float, default: 100): node loop rate (in Hz).
+
+#### 4.5.2. Subscribed Topics
 
