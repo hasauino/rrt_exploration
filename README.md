@@ -146,7 +146,7 @@ The filter nodes receives the detected frontier points from all the detectors, f
   - ```~info_radius```(float, default: 1.0): The information radius used in calculating the information gain of frontier points.
   - ```~goals_topic``` (string, default: "/detected_points"): defines the topic on which the node receives detcted frontier points.
   - ```~n_robots```(float, default: 1.0): Number of robots.
-  - ```~rate```(float, default: 1.0): node loop rate (in Hz).
+  - ```~rate```(float, default: 100): node loop rate (in Hz).
 
 #### 4.4.2. Subscribed Topics
  - The map (Topic name is defined by the ```~map_topic``` parameter) ([nav_msgs/OccupancyGrid](http://docs.ros.org/api/nav_msgs/html/msg/OccupancyGrid.html)).
