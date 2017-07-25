@@ -185,7 +185,8 @@ This node recieve target exploration goals, which are the filtered frontier poin
 - ```~frontiers_topic``` (string, default: "/filtered_points"): The topic on which the assigner node receives filtered frontier points.
 
 - ```~n_robots```(float, default: 1.0): Number of robots.
+
 -  ```~delay_after_assignement```(float, default: 0.5): The unit is seconds. It defines the amount of delay after each robot assignment.
 
-
+- ```~rate```(float, default: 1.0): node loop rate (in Hz).
 
