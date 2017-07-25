@@ -70,8 +70,7 @@ All the nodes and topics running on a robot must also be prefixed by its name. F
 And topic names should be like: ```/robot_1/odom```,  ```/robot_1/map```,  ```/robot_1/base_scan```, ..etc.
 
 ### 3.4. Setting up the navigation stack on the robots
-The ```move_base_node``` node, which brings up the navigation stack on the robot, must be running. This package (rrt_exploration) generates target exploration goals, each robot must be able to receive these points and move towards them. This is why the navigation stack is needed.
-
+The ```move_base_node``` node, which brings up the navigation stack on the robot, must be running. This package (rrt_exploration) generates target exploration goals, each robot must be able to receive these points and move towards them. This is why the navigation stack is needed. Additionally, each robot must have a global and local cost maps. All of these are proivded from the ```move_base_node```. 
 ## 4. Nodes
 There are 3 types of nodes; nodes for detecting frontier points in an occupancy grid map, a node for filtering the detected points, and a node for assigning the points to the robots. The following figure shows the structure:
 ![alt text](https://github.com/hasauino/storage/blob/master/pictures/fullSchematic.png "overview of the exploration strategy")
