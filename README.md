@@ -181,3 +181,11 @@ This node recieve target exploration goals, which are the filtered frontier poin
   - ```~hysteresis_radius```(float, default: 3.0): The unit is meter. This parameter defines the hysteresis radius.
 
   - ```~hysteresis_gain```(float, default: 2.0): The unit is meter. This parameter defines the hysteresis gain.
+ 
+- ```~frontiers_topic``` (string, default: "/filtered_points"): The topic on which the assigner node receives filtered frontier points.
+
+  - ```~n_robots```(float, default: 1.0): Number of robots.
+  -   ```~delay_after_assignement```(float, default: 0.5): The unit is seconds. It defines the amount of delay after each robot assignment.
+
+
+
