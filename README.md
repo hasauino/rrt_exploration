@@ -71,6 +71,11 @@ And topic names should be like: ```/robot_1/odom```,  ```/robot_1/map```,  ```/r
 
 ### 3.4. Setting up the navigation stack on the robots
 The ```move_base_node``` node, which brings up the navigation stack on the robot, must be running. This package (rrt_exploration) generates target exploration goals, each robot must be able to receive these points and move towards them. This is why the navigation stack is needed. Additionally, each robot must have a global and local cost maps. All of these are proivded from the ```move_base_node```. 
+
+### 3.5. A mapping node
+Each robot should have a local map generated from the [gmapping](http://wiki.ros.org/gmapping) package.
+### 3.6. A map merging node
+For the multi-robot case, there should be a node that merges all the local maps into one global map. You can use [this](http://wiki.ros.org/multirobot_map_merge) package.
 ## 4. Nodes
 There are 3 types of nodes; nodes for detecting frontier points in an occupancy grid map, a node for filtering the detected points, and a node for assigning the points to the robots. The following figure shows the structure:
 ![alt text](https://github.com/hasauino/storage/blob/master/pictures/fullSchematic.png "overview of the exploration strategy")
