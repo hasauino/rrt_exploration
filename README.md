@@ -174,3 +174,10 @@ This node recieve target exploration goals, which are the filtered frontier poin
 
 #### 4.5.1. Parameters
 - ```~map_topic``` (string, default: "/robot_1/map"): This parameter defines the topic name on which the node will recieve the map. In the single robot case, this topic should be set to the map topic of the robot. In the multi-robot case, this topic must be set to global merged map.
+  - ```~info_radius```(float, default: 1.0): The information radius used in calculating the information gain of frontier points.
+  
+  - ```~info_multiplier```(float, default: 3.0): The unit is meter. This parameter is used to give importance to information gain of a frontier point over the cost (expected travel distance to a frontier point).
+  
+  - ```~hysteresis_radius```(float, default: 3.0): The unit is meter. This parameter defines the hysteresis radius.
+
+  - ```~hysteresis_gain```(float, default: 2.0): The unit is meter. This parameter defines the hysteresis gain.
