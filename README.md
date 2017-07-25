@@ -65,7 +65,7 @@ All robot's frames should be prefixed by its name. Naming of robots starts from 
 ![alt text](https://github.com/hasauino/storage/blob/master/pictures/framesTf.png "robot_1 frames")
 
 ### 3.3. Robot's node and topic names
-All the nodes and topics running on a robot must also be prefixed by its name. For robot 1, node names should be like: ```/robot_1/move_base_node```,  ```/robot_1/slam_gmapping```.
+All the nodes and topics running on a robot must also be prefixed by its name. For robot 1, node names should look like: ```/robot_1/move_base_node```,  ```/robot_1/slam_gmapping```.
 
 And topic names should be like: ```/robot_1/odom```,  ```/robot_1/map```,  ```/robot_1/base_scan```, ..etc.
 ## 4. Nodes
