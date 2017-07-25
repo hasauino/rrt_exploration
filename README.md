@@ -1,5 +1,5 @@
 # rrt_exploration
-It is a ROS package that implements a multi-robot exploration algorithm. It is based on the Rapidly-Exploring Random Tree (RRT) algorithm. The packgae has 5 different ROS nodes:
+It is a ROS package that implements a multi-robot map exploration algorithm for mobile robots. It is based on the Rapidly-Exploring Random Tree (RRT) algorithm. It uses occupancy girds as map representations.The packgae has 5 different ROS nodes:
 
   - Global RRT frontier point detector node.
   
