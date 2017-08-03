@@ -4,11 +4,11 @@
   <version>1.0.0</version>
   <description>A ROS package that implements a multi-robot RRT-based map exploration algorithm. It also has the image-based frontier detection that uses image processing to extract frontier points</description>
 
-
+  <author>Hassan Umari</author>
   <maintainer email="oh91@windowslive.com">Hassan Umari</maintainer>
 
   <license>MIT</license>
-
+  <url>http://wiki.ros.org/rrt_exploration</url>
 
 
   <buildtool_depend>catkin</buildtool_depend>
