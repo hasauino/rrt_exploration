@@ -17,8 +17,7 @@
   <param name="map_topic" value="/robot_1/map"/>
   <param name="robot_frame" value="/robot_1/base_link"/>
   </node>
-  
-  <!--node pkg="multi_kobuki_gazebo" type="frontier_opencv_testing.py" name="detector" output="screen"/-->
+ 
   
   <node pkg="rrt_exploration" type="filter.py" name="filter" output="screen">
   <param name="map_topic" value="/robot_1/map"/>

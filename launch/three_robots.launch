@@ -30,11 +30,11 @@
   </node>
   
   <!--node pkg="multi_kobuki_gazebo" type="frontier_opencv_testing.py" name="detector" output="screen"/-->
- 
+
   <node pkg="rrt_exploration" type="filter.py" name="filter" output="screen">
   <param name="map_topic" value="/map_merge/map"/>
   <param name="info_radius" value="1"/> 
-  <param name="costmap_clearing_threshold" value="50"/> 
+  <param name="costmap_clearing_threshold" value="70"/> 
   <param name="goals_topic" value="/detected_points"/> 
   <param name="n_robots" value="3"/>
   <param name="rate" value="100"/>
