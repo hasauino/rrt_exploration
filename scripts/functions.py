@@ -17,7 +17,7 @@ class robot:
 	def __init__(self,name):
 		self.assigned_point=[]
 		self.name=name
-		self.global_frame=rospy.get_param('~global_frame','/robot_1/map')
+		self.global_frame=rospy.get_param('~global_frame','/map')
 		self.listener=tf.TransformListener()
 		self.listener.waitForTransform(self.global_frame, name+'/base_link', rospy.Time(0),rospy.Duration(10.0))
 		cond=0;	

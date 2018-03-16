@@ -37,18 +37,23 @@
   <param name="costmap_clearing_threshold" value="70"/> 
   <param name="goals_topic" value="/detected_points"/> 
   <param name="n_robots" value="3"/>
+  <param name="namespace_init_count" value="1"/>
+  <param name="namespace" value="/robot_"/>
   <param name="rate" value="100"/>
   </node>
   
   
   <node pkg="rrt_exploration" type="assigner.py" name="assigner" output="screen">
   <param name="map_topic" value="/map_merge/map"/>
+  <param name="global_frame" value="/robot_1/map"/>
   <param name="info_radius" value="1"/> 
   <param name="info_multiplier" value="3.0"/> 
   <param name="hysteresis_radius" value="3.0"/> 
   <param name="hysteresis_gain" value="2.0"/> 
   <param name="frontiers_topic" value="/filtered_points"/> 
   <param name="n_robots" value="3"/>
+  <param name="namespace_init_count" value="1"/>
+  <param name="namespace" value="/robot_"/>
   <param name="delay_after_assignement" value="0.5"/>
   <param name="rate" value="100"/>
   </node>
