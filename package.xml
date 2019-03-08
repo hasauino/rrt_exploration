@@ -28,7 +28,11 @@
   <run_depend>tf</run_depend>
   <run_depend>visualization_msgs</run_depend>
   <run_depend>message_runtime</run_depend>
-
+  <run_depend>gmapping</run_depend>
+  <run_depend>navigation</run_depend>
+  <run_depend>python-opencv</run_depend>
+  <run_depend>python-numpy</run_depend>
+  <run_depend>python-sklearn</run_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
