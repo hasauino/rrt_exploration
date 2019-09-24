@@ -69,13 +69,14 @@ int main(int argc, char **argv)
   
   // fetching all parameters
   float eta,init_map_x,init_map_y,range;
-  std::string map_topic,base_frame_topic;
+  std::string map_topic,base_frame_topic,map_frame;
   
   std::string ns;
   ns=ros::this_node::getName();
 
   ros::param::param<float>(ns+"/eta", eta, 0.5);
   ros::param::param<std::string>(ns+"/map_topic", map_topic, "/robot_1/map"); 
+  ros::param::param<std::string>(ns+"/map_frame", map_frame, "/robot_1/map"); 	
   ros::param::param<std::string>(ns+"/robot_frame", base_frame_topic, "/robot_1/base_link"); 
 //---------------------------------------------------------------
 ros::Subscriber sub= nh.subscribe(map_topic, 100 ,mapCallBack);	
@@ -237,7 +238,7 @@ char   checking=ObstacleFree(x_nearest,x_new,mapData);
 			while (temp==0){
 			try{
 			temp=1;
-			listener.lookupTransform(map_topic, base_frame_topic , ros::Time(0), transform);
+			listener.lookupTransform(map_frame, base_frame_topic , ros::Time(0), transform);
 			}
 			catch (tf::TransformException ex){
 			temp=0;
