@@ -4,7 +4,7 @@
 <launch>
 <arg name="eta" value="1.0"/>
 <arg name="Geta" value="15.0"/>
-
+<param name="namespace_init_count" value="1"/>
 
 
   <node pkg="rrt_exploration" type="global_rrt_detector" name="global_detector" output="screen">
@@ -24,7 +24,6 @@
   <param name="info_radius" value="1"/> 
   <param name="costmap_clearing_threshold" value="70"/> 
   <param name="goals_topic" value="/detected_points"/>
-  <param name="namespace_init_count" value="1"/>
   <param name="namespace" value="/robot_"/> 
   <param name="n_robots" value="1"/>
   <param name="rate" value="100"/>
@@ -39,7 +38,6 @@
   <param name="hysteresis_gain" value="2.0"/> 
   <param name="frontiers_topic" value="/filtered_points"/> 
   <param name="n_robots" value="1"/>
-  <param name="namespace_init_count" value="1"/>
   <param name="namespace" value="/robot_"/>
   <param name="delay_after_assignement" value="0.5"/>
   <param name="rate" value="100"/>
