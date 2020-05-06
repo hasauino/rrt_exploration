@@ -63,6 +63,8 @@ def node():
     rateHz = rospy.get_param('~rate', 100)
     global_costmap_topic = rospy.get_param(
         '~global_costmap_topic', '/move_base_node/global_costmap/costmap')
+    robot_frame = rospy.get_param('~robot_frame', 'base_link')
+
     litraIndx = len(namespace)
     rate = rospy.Rate(rateHz)
 # -------------------------------------------
@@ -94,10 +96,10 @@ def node():
     if len(namespace) > 0:
         for i in range(0, n_robots):
             tfLisn.waitForTransform(global_frame[1:], namespace+str(
-                i+namespace_init_count)+'/base_link', rospy.Time(0), rospy.Duration(10.0))
+                i+namespace_init_count)+'/'+robot_frame, rospy.Time(0), rospy.Duration(10.0))
     elif len(namespace) == 0:
         tfLisn.waitForTransform(
-            global_frame[1:], '/base_link', rospy.Time(0), rospy.Duration(10.0))
+            global_frame[1:], '/'+robot_frame, rospy.Time(0), rospy.Duration(10.0))
 
     rospy.Subscriber(goals_topic, PointStamped, callback=callBack,
                      callback_args=[tfLisn, global_frame[1:]])
