@@ -84,10 +84,14 @@ def node():
         rospy.Subscriber(global_costmap_topic, OccupancyGrid, globalMap)
 # wait if map is not received yet
     while (len(mapData.data) < 1):
+        rospy.loginfo('Waiting for the map')
+        rospy.sleep(0.1)
         pass
 # wait if any of robots' global costmap map is not received yet
     for i in range(0, n_robots):
         while (len(globalmaps[i].data) < 1):
+            rospy.loginfo('Waiting for the global costmap')
+            rospy.sleep(0.1)
             pass
 
     global_frame = "/"+mapData.header.frame_id
