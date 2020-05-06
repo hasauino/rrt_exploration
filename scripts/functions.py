@@ -21,6 +21,8 @@ class robot:
         self.name = name
         self.global_frame = rospy.get_param('~global_frame', '/map')
         self.robot_frame = rospy.get_param('~robot_frame', 'base_link')
+        self.plan_service = rospy.get_param(
+            '~plan_service', '/move_base_node/NavfnROS/make_plan')
         self.listener = tf.TransformListener()
         self.listener.waitForTransform(
             self.global_frame, self.name+'/'+self.robot_frame, rospy.Time(0), rospy.Duration(10.0))
@@ -41,9 +43,9 @@ class robot:
         robot.goal.target_pose.header.frame_id = self.global_frame
         robot.goal.target_pose.header.stamp = rospy.Time.now()
 
-        rospy.wait_for_service(self.name+'/move_base_node/NavfnROS/make_plan')
+        rospy.wait_for_service(self.name+self.plan_service)
         self.make_plan = rospy.ServiceProxy(
-            self.name+'/move_base_node/NavfnROS/make_plan', GetPlan)
+            self.name+self.plan_service, GetPlan)
         robot.start.header.frame_id = self.global_frame
         robot.end.header.frame_id = self.global_frame
 
