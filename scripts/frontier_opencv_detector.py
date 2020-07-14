@@ -24,11 +24,11 @@ def mapCallBack(data):
 def node():
 		global mapData
 		exploration_goal=PointStamped()
+		rospy.init_node('detector', anonymous=False)
 		map_topic= rospy.get_param('~map_topic','/robot_1/map')
 		rospy.Subscriber(map_topic, OccupancyGrid, mapCallBack)
 		targetspub = rospy.Publisher('/detected_points', PointStamped, queue_size=10)
 		pub = rospy.Publisher('shapes', Marker, queue_size=10)
-		rospy.init_node('detector', anonymous=False)
 # wait until map is received, when a map is received, mapData.header.seq will not be < 1
 		while mapData.header.seq<1 or len(mapData.data)<1:
 			pass
