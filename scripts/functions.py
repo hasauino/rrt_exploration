@@ -2,6 +2,7 @@ import rospy
 import tf
 from numpy import array
 import actionlib
+from tf.transformations import euler_from_quaternion
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from nav_msgs.srv import GetPlan
 from geometry_msgs.msg import PoseStamped
@@ -56,9 +57,10 @@ class robot:
                 (trans, rot) = self.listener.lookupTransform(
                     self.global_frame, self.name+'/'+self.robot_frame, rospy.Time(0))
                 cond = 1
+                (roll, pitch, yaw) = euler_from_quaternion(rot)
             except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
                 cond == 0
-        self.position = array([trans[0], trans[1]])
+        self.position = array([trans[0], trans[1], yaw])
         return self.position
 
     def sendGoal(self, point):
@@ -70,7 +72,7 @@ class robot:
 
     def cancelGoal(self):
         self.client.cancel_goal()
-        self.assigned_point = self.getPosition()
+        self.assigned_point = self.getPosition()[0:2]
 
     def getState(self):
         return self.client.get_state()
@@ -120,6 +122,7 @@ def informationGain(mapData, point, r):
             if (i >= 0 and i < limit and i < len(mapData.data)):
                 if(mapData.data[i] == -1 and norm(array(point)-point_of_index(mapData, i)) <= r):
                     infoGain += 1
+    # rospy.loginfo('infoGain:' + str(infoGain))
     return infoGain*(mapData.info.resolution**2)
 # ________________________________________________________________________________
 
