@@ -14,7 +14,11 @@ It is a ROS package that implements a multi-robot map exploration algorithm for 
 This is a [Youtube playlist](https://www.youtube.com/playlist?list=PLoGH52eUIHsc1B_xPLL6ogzYxrWy675kr) showing the package running on single/multiple robots, using real setup (Kobuki robots) and simulation (Gazebo).
 
 
-Note: This package was written during my master's thesis at the American University of Sharjah. My thesis advisor is Dr. [Shayok Mukhopadhyay](https://sites.google.com/site/shayok/Home). If you are using this package in your research work, please cite this [paper](http://ieeexplore.ieee.org/document/8202319/).
+Note: This package was written during my master's thesis at the American University of Sharjah. My thesis advisor is Dr. [Shayok Mukhopadhyay](https://sites.google.com/site/shayok/Home). If you are using this package in your research work, please cite these papers:
+
+- [Multi-robot Map Exploration Based on Multiple Rapidly-Exploring Randomized Trees](https://link.springer.com/article/10.1007/s42979-023-02193-2).
+
+- [Autonomous robotic exploration based on multiple rapidly-exploring randomized trees](https://ieeexplore.ieee.org/document/8202319).
 
 ## 1. Requirements
 The package has been tested on both ROS Kinetic and ROS Indigo, it should work on other distributions like Jade. The following requirements are needed before installing the package:
