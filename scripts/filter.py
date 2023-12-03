@@ -115,68 +115,49 @@ def node():
 
     # wait if no frontier is received yet
     while len(frontiers) < 1:
+        #rospy.loginfo('Waiting for frontiers')
+        rospy.sleep(0.1)
         pass
 
     points = Marker()
     points_clust = Marker()
-# Set the frame ID and timestamp.  See the TF tutorials for information on these.
     points.header.frame_id = mapData.header.frame_id
     points.header.stamp = rospy.Time.now()
-
     points.ns = "markers2"
     points.id = 0
-
     points.type = Marker.POINTS
-
-# Set the marker action for latched frontiers.  Options are ADD, DELETE, and new in ROS Indigo: 3 (DELETEALL)
     points.action = Marker.ADD
-
     points.pose.orientation.w = 1.0
-
     points.scale.x = 0.2
     points.scale.y = 0.2
-
-    points.color.r = 255.0/255.0
-    points.color.g = 255.0/255.0
-    points.color.b = 0.0/255.0
-
+    points.color.r = 1.0
+    points.color.g = 1.0
+    points.color.b = 0
     points.color.a = 1
     points.lifetime = rospy.Duration()
-
     p = Point()
-
     p.z = 0
-
     pp = []
     pl = []
-
     points_clust.header.frame_id = mapData.header.frame_id
     points_clust.header.stamp = rospy.Time.now()
-
     points_clust.ns = "markers3"
     points_clust.id = 4
-
     points_clust.type = Marker.POINTS
-
-# Set the marker action for centroids.  Options are ADD, DELETE, and new in ROS Indigo: 3 (DELETEALL)
+    # Set the marker action for centroids.  Options are ADD, DELETE, and new in ROS Indigo: 3 (DELETEALL)
     points_clust.action = Marker.ADD
-
     points_clust.pose.orientation.w = 1.0
-
     points_clust.scale.x = 0.2
     points_clust.scale.y = 0.2
-    points_clust.color.r = 0.0/255.0
-    points_clust.color.g = 255.0/255.0
-    points_clust.color.b = 0.0/255.0
-
+    points_clust.color.r = 0.0
+    points_clust.color.g = 1.0
+    points_clust.color.b = 0.0
     points_clust.color.a = 1
     points_clust.lifetime = rospy.Duration()
-
     temppoint = PointStamped()
     temppoint.header.frame_id = mapData.header.frame_id
     temppoint.header.stamp = rospy.Time(0)
     temppoint.point.z = 0.0
-
     arraypoints = PointArray()
     tempPoint = Point()
     tempPoint.z = 0.0
@@ -184,40 +165,41 @@ def node():
 # ---------------------     Main   Loop     -------------------------------
 # -------------------------------------------------------------------------
     while not rospy.is_shutdown():
-        # -------------------------------------------------------------------------
         # Clustering frontier points
         centroids = []
         front = copy(frontiers)
         if len(front) > 1:
-            ms = MeanShift(bandwidth=0.3)
+            ms = MeanShift(bandwidth=1)
             ms.fit(front)
             centroids = ms.cluster_centers_  # centroids array is the centers of each cluster
+        # rospy.loginfo('front: ' + str(len(front)))
+        # rospy.loginfo('centroids: ' + str(len(centroids)))
 
         # if there is only one frontier no need for clustering, i.e. centroids=frontiers
         if len(front) == 1:
             centroids = front
-        frontiers = copy(centroids)
-# -------------------------------------------------------------------------
-# clearing old frontiers
-
+        # clearing old frontiers
         z = 0
         while z < len(centroids):
             cond = False
             temppoint.point.x = centroids[z][0]
             temppoint.point.y = centroids[z][1]
-
             for i in range(0, n_robots):
-
                 transformedPoint = tfLisn.transformPoint(
                     globalmaps[i].header.frame_id, temppoint)
                 x = array([transformedPoint.point.x, transformedPoint.point.y])
                 cond = (gridValue(globalmaps[i], x) > threshold) or cond
-            if (cond or (informationGain(mapData, [centroids[z][0], centroids[z][1]], info_radius*0.5)) < 0.2):
+            infoGain = (informationGain(
+                mapData, [centroids[z][0], centroids[z][1]], info_radius*0.5))  # why divided by 2???
+            # rospy.loginfo('infoGain:' + str(infoGain))
+            if (cond or infoGain < 0.2):
                 centroids = delete(centroids, (z), axis=0)
                 z = z-1
             z += 1
-# -------------------------------------------------------------------------
-# publishing
+        # it should be update after delating.
+        frontiers = copy(centroids)
+        # rospy.loginfo('Total Frontiers Detected: ' + str(len(frontiers)))
+        # publishing
         arraypoints.points = []
         for i in centroids:
             tempPoint.x = i[0]
