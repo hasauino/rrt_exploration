@@ -39,7 +39,7 @@ def globalMap(data):
     global1 = data
     if n_robots > 1:
         indx = int(data._connection_header['topic']
-                   [litraIndx])-namespace_init_count
+                   [litraIndx+1])-namespace_init_count
     elif n_robots == 1:
         indx = 0
     globalmaps[indx] = data
